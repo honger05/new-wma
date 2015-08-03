@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>main</title>
+    <link rel="stylesheet" href="../css/mui.min.css" />
+    <link rel="stylesheet" href="../css/app.css" />
+    <style>
+    </style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<a id="setting" class="mui-icon iconfont mui-pull-left">&#xe619;</a>
+		<a id="car" class="mui-icon iconfont mui-pull-right">&#xe604;</a>
+		<h1 id="title" class="mui-title">入库单</h1>
+	</header>
+	<nav class="mui-bar mui-bar-tab">
+		<a href="order-in.html" id="defaultTab" class="mui-tab-item mui-active">
+			<span class="mui-icon iconfont">&#xe61c;</span>
+			<span class="mui-tab-label">入库单</span>
+		</a>
+		<a href="order-out.html" class="mui-tab-item">
+			<span class="mui-icon iconfont">&#xe61b;</span>
+			<span class="mui-tab-label">出库单</span>
+		</a>
+		<a href="stock-srch.html" class="mui-tab-item">
+			<span class="mui-icon iconfont">&#xe624;</span>
+			<span class="mui-tab-label">库存查询</span>
+		</a>
+		<a href="finance-srch.html" class="mui-tab-item">
+			<span class="mui-icon iconfont">&#xe61e;</span>
+			<span class="mui-tab-label">财务查询</span>
+		</a>
+	</nav>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/app.js"></script>
+	<script>
+		!function($, doc) {
+			
+			$.init();
+			
+			window.addEventListener('before.show', function() {
+				var state = app.getState();
+			})
+			
+			$.plusReady(function() {
+				var main = plus.webview.currentWebview();
+				var subpages = ['order-in.html', 'order-out.html', 'stock-srch.html', 'finance-srch.html'];
+				var subpages_style = {
+					top: "46px",
+					bottom: "50px"
+				}
+				for (var i = 0; i < 4; i++) {
+					var sub = plus.webview.create(subpages[i], subpages[i], subpages_style);
+					if (i > 0) {
+						sub.hide();
+					}
+					main.append(sub);
+				}
+				
+				var activeTab = subpages[0];
+				var title = doc.getElementById('title');
+				
+				$('.mui-bar-tab').on('tap', 'a', function(event) {
+					var targetTab = this.getAttribute('href');
+					if (targetTab == activeTab) {
+						return;
+					}
+					title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
+					plus.webview.show(targetTab);
+					plus.webview.hide(activeTab);
+					activeTab = targetTab;
+				});
+				
+				var settingBtn = doc.getElementById('setting');
+				var carBtn = doc.getElementById('car');
+				
+				carBtn.addEventListener('tap', function(e) {
+					$.openWindow({
+						"id": "car",
+						"show": {
+							"aniShow": "pop-in"
+						},
+						"waiting": {
+							"autoShow": false
+						}
+					})
+				})
+				
+				settingBtn.addEventListener('tap', function(e) {
+					$.openWindow({
+						"id": "setting",
+						"show": {
+							"aniShow": "pop-in"
+						},
+						"waiting": {
+							"autoShow": false
+						}
+					})
+				});
+				
+				$.oldBack = mui.back;
+				var backButtonPress = 0;
+				$.back = function(event) {
+					backButtonPress++;
+					if (backButtonPress > 1) {
+						plus.runtime.quit();
+					} else {
+						plus.nativeUI.toast('再按一次退出应用');
+					}
+					setTimeout(function() {
+						backButtonPress = 0;
+					}, 1000);
+					return false;
+				}
+			})
+			
+		}(mui, document);
+	</script>
+</body>
+</html>

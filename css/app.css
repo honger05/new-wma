@@ -1,0 +1,164 @@
+/* common */
+.cl-triangle:after {
+	content: " ";
+	display: inline-block;
+	width: 0;
+	height: 0;
+	vertical-align: middle;
+	margin-left: 5px;
+	border: 6px solid;	
+	border-color: red transparent transparent transparent;
+}
+
+/* reset mui */
+.mui-title {
+	color: #FFFFFF;
+}
+
+.mui-bar.mui-bar-nav .mui-icon {
+	color: #fff;
+}
+
+.mui-bar-tab .mui-tab-item.mui-active {
+	color: #F71454;
+}
+
+.mui-bar-nav {
+	background-color: #F71454;
+	box-shadow: 0 1px 6px #333;
+}
+
+.mui-btn-black {
+	color: #fff;
+	border: 1px solid #333;
+	background-color: #333;
+}
+
+/* cl-goods */
+.cl-goods-panel {
+	overflow: hidden;
+	padding: 15px 20px;
+	background-color: #fff;
+	margin-bottom: 9px;
+	box-shadow: 0 2px 2px #ddd;
+}
+
+.cl-goods-object {
+	line-height: 120px;
+	height: 120px;
+	max-width: 120px;
+	margin-right: 10px;
+}
+
+.cl-goods-info-title {
+	font-size: 25px;
+}
+
+/* cl-table- */
+.cl-table-header li:first-child {
+	/*background-color: #EEEEEE;
+	background-image: -webkit-linear-gradient(to bottom, #e5e5e5, #fff, #e5e5e5);
+	background-image: linear-gradient(to bottom, #e5e5e5, #fff, #e5e5e5);*/
+}
+
+.cl-table-body .mui-table-view-cell {
+	padding: 5px 5px;
+}
+
+.cl-table-body .mui-table-view-cell span[class*=mui-col-]:not(:last-child) {
+	border-right: 1px solid #eee;
+}
+
+.cl-table-body .mui-table-view-cell span[class*=mui-col-]:not(.cl-numbox-span) {
+	height: 30px;
+	line-height: 30px;
+}
+
+.cl-table-body .mui-table-view-cell .mui-numbox {
+	width: 120px;
+	height: 30px;
+}
+
+.mui-table-view-cell span[class*=mui-col-] {
+	display: block;
+	float: left;
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* tab */
+.cl-tab-list {
+	position:absolute;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.cl-tab-menu {
+	position: absolute;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 80px;
+	border-bottom: 1px solid #ddd;
+}
+
+.cl-tab-menu > li{
+}
+
+.cl-tab-menu > li > a {
+	display:block;
+	padding: 5px 0;
+	border:1px solid #ddd;
+	border-bottom-color: transparent;
+	text-align: center;
+	background-color: #f0f0f0;
+	color:#333;
+	text-decoration:none;
+	font-size: 12px;
+}
+
+.cl-tab-menu > li > a:focus,
+.cl-tab-menu > li > a:hover,
+.cl-tab-menu > li > a:active,
+.cl-tab-menu > li.active-0 > a {
+	border-left: 2px solid red;
+	border-right-color: transparent;
+	background-color: #fff;
+} 
+
+.cl-tab-content {
+	position: relative;
+	margin-left: 79px;
+	width: auto;
+	border:1px solid #ddd;
+	border-left-color: transparent;
+	height: 100%;
+}
+
+.cl-tab-content > div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width:100%;
+	height:100%;
+	padding:0;
+	font-size:12px;
+	line-height:15px;
+	color:#666;
+	background:#fff;
+	display: none;
+	overflow: auto;
+}
+
+.cl-tab-content > div.active-0 {
+	display: block;
+}
+
+/*.cl-tab-content :target {
+	z-index: 1;
+}*/
+
+

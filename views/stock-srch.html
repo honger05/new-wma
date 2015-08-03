@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" href="../css/mui.min.css" />
+		<link rel="stylesheet" href="../css/app.css" />
+	</head>
+	<body>
+		<div class="mui-content" id="content"></div>
+		
+		<script id="summary" type="text/x-handlebars-template">
+			<div class="cl-tab-list">
+				<ul class="cl-tab-menu">
+					{{#each this}}
+					<li class="active-{{@index}}"><a href="#">{{type}}</a></li>
+					{{/each}}
+				</ul>
+				<div class="cl-tab-content">
+					{{#each this}}
+					<div class="active-{{@index}}">
+						<ul class="mui-table-view">
+							{{#each typeData}}
+							<li class="mui-table-view-cell mui-media" data-bar-code="{{barCode}}">
+								<a href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../images/shuijiao.jpg">
+									<div class="mui-badge mui-badge-danger mui-pull-right">{{@index}}</div>
+									<div class="mui-media-body">
+										{{goodsName}}
+										<p class='mui-ellipsis'>{{barCode}}</p>
+									</div>
+								</a>
+							</li>
+							{{/each}}
+						</ul>
+					</div>
+					{{/each}}
+				</div>
+			</div>	
+		</script>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/app.js"></script>
+		<script src="../js/handlebars-v2.0.0.js"></script>
+		<script>
+			!function($, doc) {
+				$.init();
+				var summarySource = doc.getElementById('summary').innerHTML;
+				var summaryTemplate = Handlebars.compile(summarySource);
+				var contentEl = doc.getElementById('content');
+				var divEl = doc.createElement('div');
+				var t = [{
+					"type": "化妆品",
+					"typeData": [{
+						barCode: "002",
+						goodsName: "百雀羚"
+					}, {
+						barCode: "003",
+						goodsName: "大宝"
+					}, {
+						barCode: "002",
+						goodsName: "百雀羚"
+					}, {
+						barCode: "003",
+						goodsName: "大宝"
+					}, {
+						barCode: "002",
+						goodsName: "百雀羚"
+					}, {
+						barCode: "003",
+						goodsName: "大宝"
+					}, {
+						barCode: "002",
+						goodsName: "百雀羚"
+					}, {
+						barCode: "003",
+						goodsName: "大宝"
+					}, {
+						barCode: "002",
+						goodsName: "百雀羚"
+					}, {
+						barCode: "003",
+						goodsName: "大宝"
+					}, {
+						barCode: "002",
+						goodsName: "百雀羚"
+					}, {
+						barCode: "003",
+						goodsName: "大宝"
+					}]
+				}, {
+					"type": "运动鞋",
+					"typeData": [{
+						barCode: "003",
+						goodsName: "耐克"
+					}, {
+						barCode: "003",
+						goodsName: "耐克"
+					}]
+				}, {
+					"type": "电脑",
+					"typeData": [{
+						barCode: "003323",
+						goodsName: "惠普"
+					}, {
+						barCode: "003",
+						goodsName: "华硕"
+					}]
+				}]
+				
+				function render() {
+					divEl.innerHTML = summaryTemplate(t);
+					contentEl.appendChild(divEl.firstElementChild);
+					var tabs = $('.cl-tab-menu li');
+					var contents = $('.cl-tab-content > div');
+					var activeTab = 0;
+					$('.cl-tab-menu').on('tap', 'li', function(e) {
+						var targetTab = indexOf(tabs, this);
+						if (targetTab == activeTab) {
+							return;
+						}
+						tabs[targetTab].classList.add('active-0');
+						contents[targetTab].classList.add('active-0');
+						tabs[activeTab].classList.remove('active-0');
+						contents[activeTab].classList.remove('active-0');
+						activeTab = targetTab;
+					})
+					$('.cl-tab-content').on('tap', 'li' ,function() {
+						var barCode = this.getAttribute('data-bar-code');
+						$.openWindow({
+							"id": "detail",
+							"show": {
+								"aniShow": "pop-in"
+							},
+							"waiting": {
+								"autoShow": false
+							}
+						})
+					})
+				}
+				
+				function indexOf(els, el) {
+					var offset = -1;
+					$.each(els, function(index, l) {
+						if (el == l) {
+							offset = index;
+						}
+					});
+					return offset;
+				}
+				
+				$.plusReady(function() {
+					render();
+				})
+			}(mui, document);
+		</script>
+	</body>
+</html>
