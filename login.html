@@ -90,12 +90,14 @@
 						"url": "views/main.html"
 					});
 					var toMain = function() {
-						$.fire(mainPage, 'before.show');
+						var settingPage = plus.webview.getWebviewById('setting');
+						$.fire(mainPage, 'login.before.show'); 
+						$.fire(settingPage, 'login.before.show');
 						setTimeout(function() {
 							mainPage.show('pop-in')
 						}, 10);
 					}
-					if (settings.autoLogin && state.token) {
+					if (settings.autoLogin && state.authtoken) {
 						toMain();
 					}
 					var button_login = doc.getElementById('login');
@@ -107,7 +109,9 @@
 							account: box_account.value,
 							password: box_password.value
 						};
+						plus.nativeUI.showWaiting();
 						app.login(login_info, function(err) {
+							plus.nativeUI.closeWaiting();
 							if (err) {
 								plus.nativeUI.toast(err);
 								return;
@@ -115,6 +119,14 @@
 							toMain();
 						});
 					});
+					button_auto_login.classList[settings.autoLogin ? 'add' : 'remove']('mui-active');
+					button_auto_login.addEventListener('toggle', function(e) {
+						setTimeout(function() {
+							var isActive = e.detail.isActive;
+							settings.autoLogin = isActive;
+							app.setSettings(settings);
+						}, 50);
+					}, false);
 					
 					var backButtonPress = 0;
 					$.back = function(event) {

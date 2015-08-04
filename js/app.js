@@ -10,6 +10,7 @@
 		if (loginInfo.password.length <= 0) {
 			return callback('请输入密码');
 		}
+		
 //		loginInfo = {
 //			tenantCode: 'yp',
 //			userCode: '005',
@@ -19,15 +20,20 @@
 //			productCode: 'WMS',
 //			appCode: 'WMA'
 //		}
+//		
 //		$.post(URL_LOGIN, loginInfo, function(data) {
 //			var state = data.sessionUser;
-//			state.token = data.token;
+//			state.authtoken = data.authtoken;
 //			state.status = data.status;
 //			owner.setState(state);
 //			callback();
 //		}, 'json');
+
+		loginInfo.authtoken = 'sdsdsdsdd';
 		owner.setState(loginInfo);
-		callback();
+		setTimeout(function() {
+			callback();	
+		}, 1000);
 	}
 	
 	$.ready(function() {
@@ -37,12 +43,12 @@
 	});
 	
 	owner.setSettings = function(settings) {
-		settings = settings ||{};
+		settings = settings || {};
 		localStorage.setItem('$settings', JSON.stringify(settings));
 	}
 	
 	owner.getSettings = function() {
-		var settingsText = localStorage.getItem('$setting') || '{}';
+		var settingsText = localStorage.getItem('$settings') || '{}';
 		return JSON.parse(settingsText);
 	}
 	

@@ -19,21 +19,23 @@
 				</ul>
 				<div class="cl-tab-content">
 					{{#each this}}
-					<div class="active-{{@index}}">
-						<ul class="mui-table-view">
-							{{#each typeData}}
-							<li class="mui-table-view-cell mui-media" data-bar-code="{{barCode}}">
-								<a href="javascript:;">
-									<img class="mui-media-object mui-pull-left" src="../images/shuijiao.jpg">
-									<div class="mui-badge mui-badge-danger mui-pull-right">{{@index}}</div>
-									<div class="mui-media-body">
-										{{goodsName}}
-										<p class='mui-ellipsis'>{{barCode}}</p>
-									</div>
-								</a>
-							</li>
-							{{/each}}
-						</ul>
+					<div class="active-{{@index}} mui-scroll-wrapper">
+						<div class="mui-scroll">
+							<ul class="mui-table-view">
+								{{#each typeData}}
+								<li class="mui-table-view-cell mui-media" data-bar-code="{{barCode}}">
+									<a href="javascript:;">
+										<img class="mui-media-object mui-pull-left" src="../images/shuijiao.jpg">
+										<div class="mui-badge mui-badge-danger mui-pull-right">{{@index}}</div>
+										<div class="mui-media-body">
+											{{goodsName}}
+											<p class='mui-ellipsis'>{{barCode}}</p>
+										</div>
+									</a>
+								</li>
+								{{/each}}
+							</ul>
+						</div>
 					</div>
 					{{/each}}
 				</div>
