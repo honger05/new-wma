@@ -7,6 +7,9 @@
 		<link rel="stylesheet" href="../css/mui.min.css" />
 		<link rel="stylesheet" href="../css/app.css" />
 		<style type="text/css">
+			.cl-goods-group:last-child {
+				margin-bottom: 50px;
+			}
 			.cl-goods-group {
 				margin-bottom: 10px;
 				box-shadow: 0 2px 2px #DD524D;
@@ -62,6 +65,13 @@
 				line-height: 27px;
 				height: 27px;
 			}
+			.cl-scroll-content {
+				position: absolute;
+				top: 43px;
+				bottom: 0;
+				width: 100%;
+				height: auto;
+			}
 		</style>
 	</head>
 	<body>
@@ -73,92 +83,96 @@
 		<nav class="mui-bar mui-bar-tab">
 			<a class="mui-tab-item">总计：<span>100 元</span></a>
 		</nav>
-		<div class="mui-content">
-			<div class="cl-goods-group">
-			<div class="cl-goods-panel">
-				<img class="mui-pull-left cl-goods-object" src="../images/shuijiao.jpg" />
-				<div class="cl-goods-info">
-					<h1 class="cl-goods-info-title">海澜之家</h1>
-					<p class="cl-goods-info-desc">ssssssssssssssss</p>
-				</div>
-				<div class="cl-goods-sum">
-					<span>100</span>
-				</div>
-			</div>
-			<ul class="mui-table-view cl-table-header">
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-4 cl-triangle">尺码</span>
-					<span class="mui-col-xs-3 cl-triangle">颜色</span>
-					<span class="mui-col-xs-5 cl-triangle">数量</span>
-				</li>
-			</ul>
-			<ul class="mui-table-view cl-table-body">
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-4">170/96A</span>
-					<span class="mui-col-xs-3">红色</span>
-					<span class="mui-col-xs-5 cl-numbox-span">
-						<div class="mui-numbox">
-							<button class="mui-btn mui-numbox-btn-minus">-</button>
-							<input type="number" class="mui-numbox-input" />
-							<button class="mui-btn mui-numbox-btn-plus">+</button>
+		<div class="mui-content cl-scroll-content">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<div class="cl-goods-group">
+						<div class="cl-goods-panel">
+							<img class="mui-pull-left cl-goods-object" src="../images/shuijiao.jpg" />
+							<div class="cl-goods-info">
+								<h1 class="cl-goods-info-title">海澜之家</h1>
+								<p class="cl-goods-info-desc">ssssssssssssssss</p>
+							</div>
+							<div class="cl-goods-sum">
+								<span>100</span>
+							</div>
 						</div>
-					</span>
-				</li>
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-4">170/96A</span>
-					<span class="mui-col-xs-3">红色</span>
-					<span class="mui-col-xs-5 cl-numbox-span">
-						<div class="mui-numbox">
-							<button class="mui-btn mui-numbox-btn-minus">-</button>
-							<input type="number" class="mui-numbox-input" />
-							<button class="mui-btn mui-numbox-btn-plus">+</button>
+						<ul class="mui-table-view cl-table-header">
+							<li class="mui-table-view-cell">
+								<span class="mui-col-xs-4 cl-triangle">尺码</span>
+								<span class="mui-col-xs-3 cl-triangle">颜色</span>
+								<span class="mui-col-xs-5 cl-triangle">数量</span>
+							</li>
+						</ul>
+						<ul class="mui-table-view cl-table-body">
+							<li class="mui-table-view-cell">
+								<span class="mui-col-xs-4">170/96A</span>
+								<span class="mui-col-xs-3">红色</span>
+								<span class="mui-col-xs-5 cl-numbox-span">
+									<div class="mui-numbox">
+										<button class="mui-btn mui-numbox-btn-minus">-</button>
+										<input type="number" class="mui-numbox-input" />
+										<button class="mui-btn mui-numbox-btn-plus">+</button>
+									</div>
+								</span>
+							</li>
+							<li class="mui-table-view-cell">
+								<span class="mui-col-xs-4">170/96A</span>
+								<span class="mui-col-xs-3">红色</span>
+								<span class="mui-col-xs-5 cl-numbox-span">
+									<div class="mui-numbox">
+										<button class="mui-btn mui-numbox-btn-minus">-</button>
+										<input type="number" class="mui-numbox-input" />
+										<button class="mui-btn mui-numbox-btn-plus">+</button>
+									</div>
+								</span>
+							</li>
+						</ul>
+					</div>
+					<div class="cl-goods-group">
+						<div class="cl-goods-panel">
+							<img class="mui-pull-left cl-goods-object" src="../images/yuantiao.jpg" />
+							<div class="cl-goods-info">
+								<h1 class="cl-goods-info-title">优衣库</h1>
+								<p class="cl-goods-info-desc">xs090909</p>
+							</div>
+							<div class="cl-goods-sum">
+								<span>100</span>
+							</div>
 						</div>
-					</span>
-				</li>
-			</ul>
-			</div>
-			<div class="cl-goods-group">
-			<div class="cl-goods-panel">
-				<img class="mui-pull-left cl-goods-object" src="../images/shuijiao.jpg" />
-				<div class="cl-goods-info">
-					<h1 class="cl-goods-info-title">海澜之家</h1>
-					<p class="cl-goods-info-desc">ssssssssssssssss</p>
+						<ul class="mui-table-view cl-table-header">
+							<li class="mui-table-view-cell">
+								<span class="mui-col-xs-4 cl-triangle">尺码</span>
+								<span class="mui-col-xs-3 cl-triangle">颜色</span>
+								<span class="mui-col-xs-5 cl-triangle">数量</span>
+							</li>
+						</ul>
+						<ul class="mui-table-view cl-table-body">
+							<li class="mui-table-view-cell">
+								<span class="mui-col-xs-4">170/96A</span>
+								<span class="mui-col-xs-3">红色</span>
+								<span class="mui-col-xs-5 cl-numbox-span">
+									<div class="mui-numbox">
+										<button class="mui-btn mui-numbox-btn-minus">-</button>
+										<input type="number" class="mui-numbox-input" />
+										<button class="mui-btn mui-numbox-btn-plus">+</button>
+									</div>
+								</span>
+							</li>
+							<li class="mui-table-view-cell">
+								<span class="mui-col-xs-4">170/96A</span>
+								<span class="mui-col-xs-3">红色</span>
+								<span class="mui-col-xs-5 cl-numbox-span">
+									<div class="mui-numbox">
+										<button class="mui-btn mui-numbox-btn-minus">-</button>
+										<input type="number" class="mui-numbox-input" />
+										<button class="mui-btn mui-numbox-btn-plus">+</button>
+									</div>
+								</span>
+							</li>
+						</ul>
+					</div>
 				</div>
-				<div class="cl-goods-sum">
-					<span>100</span>
-				</div>
-			</div>
-			<ul class="mui-table-view cl-table-header">
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-4 cl-triangle">尺码</span>
-					<span class="mui-col-xs-3 cl-triangle">颜色</span>
-					<span class="mui-col-xs-5 cl-triangle">数量</span>
-				</li>
-			</ul>
-			<ul class="mui-table-view cl-table-body">
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-4">170/96A</span>
-					<span class="mui-col-xs-3">红色</span>
-					<span class="mui-col-xs-5 cl-numbox-span">
-						<div class="mui-numbox">
-							<button class="mui-btn mui-numbox-btn-minus">-</button>
-							<input type="number" class="mui-numbox-input" />
-							<button class="mui-btn mui-numbox-btn-plus">+</button>
-						</div>
-					</span>
-				</li>
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-4">170/96A</span>
-					<span class="mui-col-xs-3">红色</span>
-					<span class="mui-col-xs-5 cl-numbox-span">
-						<div class="mui-numbox">
-							<button class="mui-btn mui-numbox-btn-minus">-</button>
-							<input type="number" class="mui-numbox-input" />
-							<button class="mui-btn mui-numbox-btn-plus">+</button>
-						</div>
-					</span>
-				</li>
-			</ul>
 			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
@@ -166,7 +180,7 @@
 		<script>
 			!function($, doc) {
 				$.init();	
-				
+				$('.mui-scroll-wrapper').scroll();
 			}(mui, document);
 		</script>
 	</body>
