@@ -10,6 +10,15 @@
 		if (loginInfo.password.length <= 0) {
 			return callback('请输入密码');
 		}
+//		loginInfo = {
+//			tenantCode: 'yp',
+//			userCode: '005',
+//			password: '123456',
+//			isExpire: true,
+//			clientType: 'M',
+//			productCode: 'WMS',
+//			appCode: 'WMA'
+//		}
 //		$.post(URL_LOGIN, loginInfo, function(data) {
 //			var state = data.sessionUser;
 //			state.token = data.token;

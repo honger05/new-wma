@@ -70,13 +70,13 @@
 }
 
 .cl-table-body .mui-table-view-cell span[class*=mui-col-]:not(.cl-numbox-span) {
-	height: 30px;
-	line-height: 30px;
+	height: 37px;
+	line-height: 37px;
 }
 
 .cl-table-body .mui-table-view-cell .mui-numbox {
 	width: 120px;
-	height: 30px;
+	height: 37px;
 }
 
 .mui-table-view-cell span[class*=mui-col-] {
@@ -110,7 +110,7 @@
 
 .cl-tab-menu > li > a {
 	display:block;
-	padding: 5px 0;
+	padding: 8px 0;
 	border:1px solid #ddd;
 	border-bottom-color: transparent;
 	text-align: center;
@@ -133,7 +133,7 @@
 	position: relative;
 	margin-left: 79px;
 	width: auto;
-	border:1px solid #ddd;
+	border:0 solid #ddd;
 	border-left-color: transparent;
 	height: 100%;
 }
