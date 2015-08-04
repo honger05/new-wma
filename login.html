@@ -69,26 +69,36 @@
 		<script>
 			!function($, doc){
 				$.init({
-					statusBarBackground: '#F71454',
-					preloadPages: [{
-						"id": "setting",
-						"url": "views/setting.html"
-					}, {
-						"id": "car",
-						"url": "views/car.html"
-					}, {
-						"id": "detail",
-						"url": "views/detail.html"
-					}]
+					statusBarBackground: '#F71454'
 				});
+				
+				var settings = app.getSettings();
+				var state = app.getState();
+				var button_login = doc.getElementById('login');
+				var box_account = doc.getElementById('account');
+				var box_password = doc.getElementById('password');
+				var button_auto_login = doc.getElementById('auto-login');
+					
+				button_auto_login.classList[settings.autoLogin ? 'add' : 'remove']('mui-active');
+				
 				$.plusReady(function() {
 					plus.screen.lockOrientation('portrait-primary');
-					var settings = app.getSettings();
-					var state = app.getState();
 					var mainPage = $.preload({
 						"id": "main",
 						"url": "views/main.html"
 					});
+					var settingPage = $.preload({
+						"id": "setting",
+						"url": "views/setting.html"
+					});
+					var carPage = $.preload({
+						"id": "car",
+						"url": "views/car.html"
+					});
+					var detailPage = $.preload({
+						"id": "detail",
+						"url": "views/detail.html"
+					})
 					var toMain = function() {
 						var settingPage = plus.webview.getWebviewById('setting');
 						$.fire(mainPage, 'login.before.show'); 
@@ -100,10 +110,7 @@
 					if (settings.autoLogin && state.authtoken) {
 						toMain();
 					}
-					var button_login = doc.getElementById('login');
-					var box_account = doc.getElementById('account');
-					var box_password = doc.getElementById('password');
-					var button_auto_login = doc.getElementById('auto-login');
+					
 					button_login.addEventListener('tap', function(event) {
 						var login_info = {
 							account: box_account.value,
@@ -119,7 +126,6 @@
 							toMain();
 						});
 					});
-					button_auto_login.classList[settings.autoLogin ? 'add' : 'remove']('mui-active');
 					button_auto_login.addEventListener('toggle', function(e) {
 						setTimeout(function() {
 							var isActive = e.detail.isActive;

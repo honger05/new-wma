@@ -56,12 +56,32 @@
 				});
 				
 				doc.getElementById('exit').addEventListener('tap', function() {
+					var loginPage = plus.webview.getLaunchWebview();
 					if ($.os.ios) {
 						app.setState({});
-						var loginPage = plus.webview.getLaunchWebview();
 						loginPage.show('pop-in', 250);
 						return;
 					}
+					var btnArray = [{
+						title: "注销当前账号"
+					}, {
+						title: "直接关闭应用"
+					}];
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: btnArray
+					}, function(event) {
+						var index = event.index;
+						switch (index) {
+							case 1:
+								app.setState({});
+								loginPage.show('pop-in', 250);
+								break;
+							case 2:
+								plus.runtime.quit();
+								break;
+						}
+					});
 				})
 				
 			}(mui, document);

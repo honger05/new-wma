@@ -37,7 +37,7 @@
 	<script src="../js/app.js"></script>
 	<script>
 		!function($, doc) {
-			
+
 			$.init();
 			
 			window.addEventListener('login.before.show', function() {
@@ -45,6 +45,7 @@
 			})
 			
 			$.plusReady(function() {
+				plus.nativeUI.showWaiting();
 				var main = plus.webview.currentWebview();
 				var subpages = ['order-in.html', 'order-out.html', 'stock-srch.html', 'finance-srch.html'];
 				var subpages_style = {
@@ -114,6 +115,11 @@
 					}, 1000);
 					return false;
 				}
+				
+				setTimeout(function() {
+					plus.nativeUI.closeWaiting();
+				}, 1000)
+				
 			})
 			
 		}(mui, document);
