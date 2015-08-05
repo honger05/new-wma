@@ -98,18 +98,22 @@
 					var detailPage = $.preload({
 						"id": "detail",
 						"url": "views/detail.html"
-					})
-					var toMain = function() {
+					});
+					var toMain = function(aniShow) {
 						var settingPage = plus.webview.getWebviewById('setting');
 						$.fire(mainPage, 'login.before.show'); 
 						$.fire(settingPage, 'login.before.show');
 						setTimeout(function() {
-							mainPage.show('pop-in')
-						}, 10);
+							mainPage.show(aniShow)
+						}, 0);
 					}
 					if (settings.autoLogin && state.authtoken) {
-						toMain();
+						toMain('fade-in');
 					}
+					
+					setTimeout(function() {
+						plus.navigator.closeSplashscreen();
+					}, 600);
 					
 					button_login.addEventListener('tap', function(event) {
 						var login_info = {
@@ -123,7 +127,7 @@
 								plus.nativeUI.toast(err);
 								return;
 							}
-							toMain();
+							toMain('pop-in');
 						});
 					});
 					button_auto_login.addEventListener('toggle', function(e) {
