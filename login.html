@@ -108,21 +108,21 @@
 						}, 0);
 					}
 					if (settings.autoLogin && state.authtoken) {
-						toMain('fade-in');
+						setTimeout(function() {
+							toMain('fade-in');							
+						}, 3000);
 					}
 					
 					setTimeout(function() {
 						plus.navigator.closeSplashscreen();
-					}, 600);
+					}, 3600);
 					
 					button_login.addEventListener('tap', function(event) {
 						var login_info = {
-							account: box_account.value,
+							userCode: box_account.value,
 							password: box_password.value
 						};
-						plus.nativeUI.showWaiting();
 						app.login(login_info, function(err) {
-							plus.nativeUI.closeWaiting();
 							if (err) {
 								plus.nativeUI.toast(err);
 								return;

@@ -77,110 +77,137 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<a class="mui-icon iconfont mui-pull-right">&#xe62f;</a>
-			<h1 class="mui-title">购物车</h1>
+			<a class="mui-icon iconfont mui-pull-right" id="stock">&#xe62f;</a>
+			<h1 class="mui-title" id="title"></h1>
 		</header>
 		<nav class="mui-bar mui-bar-tab">
-			<a class="mui-tab-item">总计：<span>200 元</span></a>
+			<a class="mui-tab-item">总计：<span class="fn-rmb">200</span> 元</a>
 		</nav>
-		<div class="mui-content cl-scroll-content">
+		<div class="mui-content cl-scroll-content" id="content">
 			<div class="mui-scroll-wrapper">
-				<div class="mui-scroll">
-					<div class="cl-goods-group">
-						<div class="cl-goods-panel">
-							<img class="mui-pull-left cl-goods-object" src="../images/shuijiao.jpg" />
-							<div class="cl-goods-info">
-								<h1 class="cl-goods-info-title">海澜之家</h1>
-								<p class="cl-goods-info-desc">ssssssssssssssss</p>
-							</div>
-							<div class="cl-goods-sum">
-								<span>100</span>
-							</div>
-						</div>
-						<ul class="mui-table-view cl-table-header">
-							<li class="mui-table-view-cell">
-								<span class="mui-col-xs-4 cl-triangle">尺码</span>
-								<span class="mui-col-xs-3 cl-triangle">颜色</span>
-								<span class="mui-col-xs-5 cl-triangle">数量</span>
-							</li>
-						</ul>
-						<ul class="mui-table-view cl-table-body">
-							<li class="mui-table-view-cell">
-								<span class="mui-col-xs-4">170/96A</span>
-								<span class="mui-col-xs-3">红色</span>
-								<span class="mui-col-xs-5 cl-numbox-span">
-									<div class="mui-numbox">
-										<button class="mui-btn mui-numbox-btn-minus">-</button>
-										<input type="number" class="mui-numbox-input" />
-										<button class="mui-btn mui-numbox-btn-plus">+</button>
-									</div>
-								</span>
-							</li>
-							<li class="mui-table-view-cell">
-								<span class="mui-col-xs-4">170/96A</span>
-								<span class="mui-col-xs-3">红色</span>
-								<span class="mui-col-xs-5 cl-numbox-span">
-									<div class="mui-numbox">
-										<button class="mui-btn mui-numbox-btn-minus">-</button>
-										<input type="number" class="mui-numbox-input" />
-										<button class="mui-btn mui-numbox-btn-plus">+</button>
-									</div>
-								</span>
-							</li>
-						</ul>
-					</div>
-					<div class="cl-goods-group">
-						<div class="cl-goods-panel">
-							<img class="mui-pull-left cl-goods-object" src="../images/yuantiao.jpg" />
-							<div class="cl-goods-info">
-								<h1 class="cl-goods-info-title">优衣库</h1>
-								<p class="cl-goods-info-desc">xs090909</p>
-							</div>
-							<div class="cl-goods-sum">
-								<span>100</span>
-							</div>
-						</div>
-						<ul class="mui-table-view cl-table-header">
-							<li class="mui-table-view-cell">
-								<span class="mui-col-xs-4 cl-triangle">尺码</span>
-								<span class="mui-col-xs-3 cl-triangle">颜色</span>
-								<span class="mui-col-xs-5 cl-triangle">数量</span>
-							</li>
-						</ul>
-						<ul class="mui-table-view cl-table-body">
-							<li class="mui-table-view-cell">
-								<span class="mui-col-xs-4">170/96A</span>
-								<span class="mui-col-xs-3">红色</span>
-								<span class="mui-col-xs-5 cl-numbox-span">
-									<div class="mui-numbox">
-										<button class="mui-btn mui-numbox-btn-minus">-</button>
-										<input type="number" class="mui-numbox-input" />
-										<button class="mui-btn mui-numbox-btn-plus">+</button>
-									</div>
-								</span>
-							</li>
-							<li class="mui-table-view-cell">
-								<span class="mui-col-xs-4">170/96A</span>
-								<span class="mui-col-xs-3">红色</span>
-								<span class="mui-col-xs-5 cl-numbox-span">
-									<div class="mui-numbox">
-										<button class="mui-btn mui-numbox-btn-minus">-</button>
-										<input type="number" class="mui-numbox-input" />
-										<button class="mui-btn mui-numbox-btn-plus">+</button>
-									</div>
-								</span>
-							</li>
-						</ul>
-					</div>
+				<div class="mui-scroll" id="scroll">
 				</div>
 			</div>
 		</div>
+		
+		<script id="car-template" type="text/x-handlebars-template">
+			{{#each this}}
+			<div class="cl-goods-group">
+				<div class="cl-goods-panel">
+					<img class="mui-pull-left cl-goods-object" src="{{imgUrl}}" />
+					<div class="cl-goods-info">
+						<h1 class="cl-goods-info-title">{{goodsName}}</h1>
+						<p class="cl-goods-info-desc">{{goodsCode}}</p>
+					</div>
+					<div class="cl-goods-sum">
+						<span>{{sum}}</span>
+					</div>
+				</div>
+				<ul class="mui-table-view cl-table-header">
+					<li class="mui-table-view-cell">
+						<span class="mui-col-xs-4 cl-triangle">尺码</span>
+						<span class="mui-col-xs-3 cl-triangle">颜色</span>
+						<span class="mui-col-xs-5 cl-triangle">数量</span>
+					</li>
+				</ul>
+				<ul class="mui-table-view cl-table-body">
+					{{#each goodsInfo}}
+					<li class="mui-table-view-cell">
+						<span class="mui-col-xs-4">{{size}}</span>
+						<span class="mui-col-xs-3">{{color}}</span>
+						<span class="mui-col-xs-5 cl-numbox-span">
+							<div class="mui-numbox">
+								<button class="mui-btn mui-numbox-btn-minus">-</button>
+								<input type="number" class="mui-numbox-input" value="{{num}}"/>
+								<button class="mui-btn mui-numbox-btn-plus">+</button>
+							</div>
+						</span>
+					</li>
+					{{/each}}
+				</ul>
+			</div>
+			{{/each}}
+		</script>
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/handlebars-v2.0.0.js"></script>
 		<script src="../js/app.js"></script>
 		<script>
 			!function($, doc) {
 				$.init();	
 				$('.mui-scroll-wrapper').scroll();
+				
+				var carSource = doc.getElementById('car-template').innerHTML;
+				var carTemplate = Handlebars.compile(carSource);
+				var scrollEl = doc.getElementById('scroll');
+				var titleEl = doc.getElementById('title');
+				var stockEl = doc.getElementById('stock');
+				var type;
+				
+				window.addEventListener('before.show', function(e) {
+					type = e.detail.type;
+					switch (type){
+						case '1':
+							titleEl.innerHTML = '待入库订单';
+							stockEl.setAttribute('methodName', 'stockIn');
+							break;
+						case '2':
+							titleEl.innerHTML = '待出库订单';
+							stockEl.setAttribute('methodName', 'stockOut');
+							break;
+					}
+					var orders = app.getOrders();
+					for (var i = orders.length - 1; i >= 0; i--) {
+						if (orders[i].type == type) {
+							var sortData = sortByGoodsCode(orders[i].datas);
+							scrollEl.innerHTML = carTemplate(sortData);
+							break;
+						}
+					}
+				});
+				
+				stockEl.addEventListener('tap', function() {
+					var methodName = this.getAttribute('methodName');
+					var orders = app.getOrders();
+					for (var i = orders.length - 1; i >= 0; i--) {
+						if (orders[i].type == type) {
+							app[methodName](orders[i].datas, function() {
+								alert('ok')
+							});
+							break;
+						}
+					}
+				});
+				
+				function sortByGoodsCode(goods) {
+					var target = {};
+					var goodsGroup = [];
+					for (var i = goods.length - 1; i >= 0; i--) {
+						!target[goods[i].goodsCode] && (target[goods[i].goodsCode] = []);
+						target[goods[i].goodsCode].push(goods[i]);
+					}
+					for (var j in target) {
+						var temp = {};
+						temp.goodsCode = target[j][0].goodsCode;
+						temp.goodsName = target[j][0].goodsName;
+						temp.imgUrl = target[j][0].imgUrl;
+						temp.goodsInfo = [];
+						temp.sum = 0;
+						for (var k = target[j].length - 1; k >= 0; k--) {
+							temp.sum += target[j][k].num;
+							temp.goodsInfo.push({
+								color: target[j][k].color,
+								size: target[j][k].size,
+								goodsId: target[j][k].goodsId,
+								num: target[j][k].num
+							})
+						}
+						target[j] = temp;
+						goodsGroup.push(temp);
+					}
+					
+					return goodsGroup;
+				}
+				
 			}(mui, document);
 		</script>
 	</body>

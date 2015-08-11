@@ -12,24 +12,24 @@
 <body>
 	<header class="mui-bar mui-bar-nav">
 		<a id="setting" class="mui-icon iconfont mui-pull-left">&#xe619;</a>
-		<a id="car" class="mui-icon iconfont mui-pull-right">&#xe604;</a>
+		<a id="car" class="mui-icon iconfont mui-pull-right">&#xe61c;</a>
 		<h1 id="title" class="mui-title">入库单</h1>
 	</header>
 	<nav class="mui-bar mui-bar-tab">
-		<a href="order-in.html" id="defaultTab" class="mui-tab-item mui-active">
-			<span class="mui-icon iconfont">&#xe61c;</span>
+		<a href="order-in.html" id="defaultTab" class="mui-tab-item mui-active" data-type="1">
+			<span class="mui-icon iconfont">&#xe65a;</span>
 			<span class="mui-tab-label">入库单</span>
 		</a>
-		<a href="order-out.html" class="mui-tab-item">
-			<span class="mui-icon iconfont">&#xe61b;</span>
+		<a href="order-out.html" class="mui-tab-item" data-type="2">
+			<span class="mui-icon iconfont">&#xe664;</span>
 			<span class="mui-tab-label">出库单</span>
 		</a>
-		<a href="stock-srch.html" class="mui-tab-item">
-			<span class="mui-icon iconfont">&#xe624;</span>
+		<a href="stock-srch.html" class="mui-tab-item" data-type="3">
+			<span class="mui-icon iconfont">&#xe656;</span>
 			<span class="mui-tab-label">库存查询</span>
 		</a>
-		<a href="finance-srch.html" class="mui-tab-item">
-			<span class="mui-icon iconfont">&#xe61e;</span>
+		<a href="finance-srch.html" class="mui-tab-item" data-type="4">
+			<span class="mui-icon iconfont">&#xe659;</span>
 			<span class="mui-tab-label">财务查询</span>
 		</a>
 	</nav>
@@ -37,15 +37,24 @@
 	<script src="../js/app.js"></script>
 	<script>
 		!function($, doc) {
-
-			$.init();
+			var settingBtn = doc.getElementById('setting');
+			var carBtn = doc.getElementById('car');
 			
+			$.init();
 			window.addEventListener('login.before.show', function() {
 				var state = app.getState();
+				app.getRemoteSummary(function(data) {
+					app.setSummary(data);
+					var order_in_page = plus.webview.getWebviewById('order-in.html');
+					var order_out_page = plus.webview.getWebviewById('order-out.html');
+					var stock_srch_page = plus.webview.getWebviewById('stock-srch.html');
+					$.fire(order_in_page, 'before.show');
+					$.fire(order_out_page, 'before.show');
+					$.fire(stock_srch_page, 'before.show');
+				});
 			})
 			
 			$.plusReady(function() {
-				plus.nativeUI.showWaiting();
 				var main = plus.webview.currentWebview();
 				var subpages = ['order-in.html', 'order-out.html', 'stock-srch.html', 'finance-srch.html'];
 				var subpages_style = {
@@ -66,6 +75,25 @@
 				
 				$('.mui-bar-tab').on('tap', 'a', function(event) {
 					var targetTab = this.getAttribute('href');
+					var type = parseInt(this.getAttribute('data-type'));
+					switch (type){
+						case 1:
+							carBtn.innerHTML = '&#xe61c;';
+							carBtn.setAttribute('data-type', 1);
+							break;
+						case 2:
+							carBtn.innerHTML = '&#xe61b;';
+							carBtn.setAttribute('data-type', 2);
+							break;
+						case 3:
+							carBtn.innerHTML = '';
+							carBtn.setAttribute('data-type', 3);
+							break;
+						case 4:
+							carBtn.innerHTML = '';
+							carBtn.setAttribute('data-type', 4);
+							break;
+					}
 					if (targetTab == activeTab) {
 						return;
 					}
@@ -75,19 +103,15 @@
 					activeTab = targetTab;
 				});
 				
-				var settingBtn = doc.getElementById('setting');
-				var carBtn = doc.getElementById('car');
-				
 				carBtn.addEventListener('tap', function(e) {
-					$.openWindow({
-						"id": "car",
-						"show": {
-							"aniShow": "pop-in"
-						},
-						"waiting": {
-							"autoShow": false
-						}
-					})
+					var car_page = plus.webview.getWebviewById('car');
+					var type = this.getAttribute('data-type');
+					$.fire(car_page, 'before.show', {
+						type: type
+					});
+					setTimeout(function() {
+						car_page.show('pop-in');
+					}, 100);
 				})
 				
 				settingBtn.addEventListener('tap', function(e) {
@@ -116,10 +140,6 @@
 					}, 1000);
 					return false;
 				}
-				
-				setTimeout(function() {
-					plus.nativeUI.closeWaiting();
-				}, 1000)
 				
 			})
 			

@@ -5,9 +5,14 @@
 	width: 0;
 	height: 0;
 	vertical-align: middle;
-	margin-left: 5px;
-	border: 6px solid;	
+	margin-left: 2px;
+	border: 4px solid;	
 	border-color: red transparent transparent transparent;
+}
+.fn-rmb {
+	color: hsl(0, 100%, 50%);
+	font-size: 20px;
+	letter-spacing: 2px;
 }
 
 /* reset mui */
@@ -26,6 +31,10 @@
 .mui-bar-nav {
 	background-color: #F71454;
 	box-shadow: 0 1px 6px #333;
+}
+
+.mui-bar-tab {
+	background-color: #333333;
 }
 
 .mui-btn-black {
@@ -59,10 +68,12 @@
 	/*background-color: #EEEEEE;
 	background-image: -webkit-linear-gradient(to bottom, #e5e5e5, #fff, #e5e5e5);
 	background-image: linear-gradient(to bottom, #e5e5e5, #fff, #e5e5e5);*/
+	font-size: 13px;
 }
 
 .cl-table-body .mui-table-view-cell {
 	padding: 5px 5px;
+	font-size: 13px;
 }
 
 .cl-table-body .mui-table-view-cell span[class*=mui-col-]:not(:last-child) {
