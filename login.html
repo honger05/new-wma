@@ -89,33 +89,61 @@
 					});
 					var settingPage = $.preload({
 						"id": "setting",
-						"url": "views/setting.html"
+						"url": "views/setting.html",
+						"styles": {
+							"popGesture": "hide"
+						},
+						"subpages": [{
+							"id": "setting-sub",
+							"url": "views/setting-sub.html",
+							"styles": {
+								"top": "46px",
+								"popGesture": "hide"
+							}
+						}]
 					});
 					var carPage = $.preload({
 						"id": "car",
-						"url": "views/car.html"
+						"url": "views/car.html",
+						"styles": {
+							"popGesture": "hide"
+						}
 					});
 					var detailPage = $.preload({
 						"id": "detail",
-						"url": "views/detail.html"
+						"url": "views/detail.html",
+						"styles": {
+							"popGesture": "hide"
+						},
+						"subpages": [{
+							"id": "detail-sub",
+							"url": "views/detail-sub.html",
+							"styles": {
+								"top": "46px",
+								"popGesture": "hide"
+							}
+						}]
 					});
 					var toMain = function(aniShow) {
 						var settingPage = plus.webview.getWebviewById('setting');
 						$.fire(mainPage, 'login.before.show'); 
 						$.fire(settingPage, 'login.before.show');
 						setTimeout(function() {
-							mainPage.show(aniShow)
+							mainPage.show(aniShow, app.DURATION_TIME);
+							setTimeout(function() {
+								plus.webview.currentWebview().hide();
+							}, 1000);
 						}, 0);
 					}
-					if (settings.autoLogin && state.authtoken) {
-						setTimeout(function() {
-							toMain('fade-in');							
-						}, 3000);
-					}
+//					if (settings.autoLogin && state.authtoken) {
+//						setTimeout(function() {
+//							toMain('fade-in');							
+//						}, 3000);
+//					}
 					
 					setTimeout(function() {
 						plus.navigator.closeSplashscreen();
-					}, 3600);
+					}, 600);
 					
 					button_login.addEventListener('tap', function(event) {
 						var login_info = {

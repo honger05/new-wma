@@ -1,5 +1,5 @@
 ;(function($, owner) {
-	var HOSTNAME = 'http://192.168.10.215/';
+	var HOSTNAME = 'http://192.168.1.108:8080/';
 	var URL_LOGIN = HOSTNAME + 'cl-restapi/login.do';
 	var URL_SUMMARY = HOSTNAME + 'cl-restapi/stock/query/summary.do';
 	var URL_DETAIL = HOSTNAME + 'cl-restapi/stock/query/detail.do';
@@ -15,7 +15,14 @@
 	var DYNAMIC_TYPE = 'com.chenlai.cloud.paas.common.entity.DynamicEntity';
 	var TIMEOUT = 10 * 1000;
 	
-	owner.login = function(loginInfo, callback) {
+	owner.DURATION_TIME = 250;
+	owner.ANISHOW = 'pop-in';
+	if ($.os.android) {
+		owner.DURATION_TIME = 250;
+		owner.ANISHOW = 'slide-in-right';
+	}
+	
+	owner.login = function(loginInfo, callback, no_mask) {
 		callback = callback || $.noop;
 		if (loginInfo.userCode.length <= 0) {
 			return callback('请输入账号');
@@ -46,10 +53,10 @@
 				owner.setState(state);
 				callback();
 			}
-		});
+		}, no_mask);
 	};
 	
-	owner.getRemoteFinacial = function(callback) {
+	owner.getRemoteFinacial = function(callback, no_mask) {
 		var state = app.getState();
 		this.ajax(URL_FINACIAL, {
 			data: {
@@ -57,9 +64,9 @@
 				authtoken: state.authtoken
 			},
 			successHandle: function(data) {
-				callback(data);
+				callback(data.main);
 			}
-		})
+		}, no_mask)
 	};
 	
 	owner.getRemoteGoods = function(callback) {
@@ -83,7 +90,7 @@
 		})
 	};
 	
-	owner.getRemoteSummary = function(callback) {
+	owner.getRemoteSummary = function(callback, no_mask) {
 		var state = app.getState();
 		var dataInfo = {
 			"authtoken": state.authtoken,
@@ -103,10 +110,10 @@
 				}
 				callback(summarydata);
 			}
-		});
+		}, no_mask);
 	}
 	
-	owner.getRemoteDetail = function(barCode, callback) {
+	owner.getRemoteDetail = function(barCode, callback, no_mask) {
 		var state = app.getState();
 		var dataInfo = {
 			"authtoken": state.authtoken,
@@ -117,36 +124,38 @@
 		this.ajax(URL_DETAIL, {
 			data: dataInfo,
 			successHandle: function(data){
-				var reData = {};
-				reData.goodsName = data.main[0].goodsName;
-				reData.goodsCode = data.main[0].goodsCode;
-				reData.allStockQuantity = data.main[0].allStockQuantity;
-				reData.goodsInfo = [];
-				for (var i in data.main) {
-					var goodsSku = JSON.parse(data.main[i].goodsSku);
-					goodsSku['color'] = '';
-					goodsSku['size'] = '';
-					for (var x in goodsSku) {
-						if (x == '颜色') {
-							goodsSku['color'] = goodsSku[x];
+				if (data.main[0]) {
+					var reData = {};
+					reData.goodsName = data.main[0].goodsName;
+					reData.goodsCode = data.main[0].goodsCode;
+					reData.allStockQuantity = data.main[0].allStockQuantity;
+					reData.goodsInfo = [];
+					for (var i in data.main) {
+						var goodsSku = JSON.parse(data.main[i].goodsSku);
+						goodsSku['color'] = '';
+						goodsSku['size'] = '';
+						for (var x in goodsSku) {
+							if (x == '颜色') {
+								goodsSku['color'] = goodsSku[x];
+							}
+							if (x == '尺码') {
+								goodsSku['size'] = goodsSku[x];
+							}
 						}
-						if (x == '尺码') {
-							goodsSku['size'] = goodsSku[x];
-						}
+						reData.goodsInfo.push({
+							goodsId: data.main[i].goodsId,
+							quantity: data.main[i].quantity,
+							goodsSku: goodsSku
+						})
 					}
-					reData.goodsInfo.push({
-						goodsId: data.main[i].goodsId,
-						quantity: data.main[i].quantity,
-						goodsSku: goodsSku
-					})
+					callback(reData);
 				}
-				callback(reData);
 			}
-		});
+		}, no_mask);
 	}
 	
 	owner.stockIn = function(dataInfo, callback) {
-		var dates = new Date();
+		var dates = format(new Date());
 		var state = app.getState();
 		var stockInOrder = {
 			"@type": STOCK_IN_TYPE,
@@ -172,19 +181,18 @@
 			main: [stockInOrder]
 		};
 		
-		alert(JSON.stringify(staticExchangeEtity))
+		console.log(JSON.stringify(staticExchangeEtity));
 		
 		this.ajax(URL_STOCK_IN + '?authtoken=' + state.authtoken, {
 			dataJson: staticExchangeEtity,
 	 		successHandle: function(data) {
-				alert(JSON.stringify(data))
 				callback && callback(data);
 			}
  		});
 	};
 	
 	owner.stockOut = function(dataInfo, callback) {
-		var date = new Date();
+		var date = format(new Date());
 		var state = app.getState();
 		var stockOutOrder = {
 			"@type": STOCK_OUT_TYPE,
@@ -211,10 +219,12 @@
 			"@type": STATIC_TYPE,
 			main: [stockOutOrder]
 		}
+		
+		console.log(JSON.stringify(staticExchangeEtity));
+		
 		this.ajax(URL_STOCK_OUT + '?authtoken=' + state.authtoken, {
 			dataJson: staticExchangeEntity,
 			successHandle: function(data) {
-				alert(JSON.stringify(data))
 				callback && callback(data);
 			}
 		})
@@ -256,17 +266,27 @@
 		return JSON.parse(summaryText);
 	}
 	
-	owner.setOrders = function(order) {
-		order = order || [];
-		localStorage.setItem('$orders', JSON.stringify(order));
+	owner.setOrders = function(orders) {
+		orders = orders || [];
+		localStorage.setItem('$orders', JSON.stringify(orders));
 	}
 	
 	owner.getOrders = function() {
-		var orderText = localStorage.getItem('$orders') || '[]';
+		var ordersText = localStorage.getItem('$orders') || '[]';
+		return JSON.parse(ordersText);
+	}
+	
+	owner.setOrder = function(order) {
+		order = order || {};
+		localStorage.setItem('$order', JSON.stringify(order));
+	}
+	
+	owner.getOrder = function() {
+		var orderText = localStorage.getItem('$order') || '{}';
 		return JSON.parse(orderText);
 	}
 	
-	owner.ajax = function(url, config, mask) {
+	owner.ajax = function(url, config, no_mask) {
 		console.log(url);
 		if (plus.networkinfo.getCurrentType() === plus.networkinfo.CONNECTION_NONE) {
 			plus.nativeUI.toast('似乎已断开与互联网的连接', {
@@ -274,7 +294,7 @@
 			});
 			return;
 		}
-		if (window.plus && !mask) {
+		if (window.plus && !no_mask) {
 			plus.nativeUI.showWaiting();
 		}
 		config.dataJson && $.extend(config, {
@@ -288,14 +308,14 @@
 			timeout: TIMEOUT,
 			data: {},
 			success: function(data) {
-				if (window.plus && !mask) {
+				if (window.plus && !no_mask) {
 					plus.nativeUI.closeWaiting();
 				}
 				console.log(JSON.stringify(data));
 				config.successHandle && config.successHandle.apply(this, arguments);
 			},
 			error: function(xhr, type, errorThrown) {
-				if (window.plus && !mask) {
+				if (window.plus && !no_mask) {
 					plus.nativeUI.closeWaiting();
 				}
 				if (type == 'timeout') {
@@ -310,5 +330,15 @@
 		}, config);
 		$.ajax(url, config);
 	}
+	
+    function format(date) {
+    	function pad(n) {return n < 10 ? '0' + n : n;}
+    	return date.getFullYear() + '-' 
+    		+ pad(date.getMonth() + 1) + '-' 
+    		+ pad(date.getDate()) + 'T' 
+    		+ pad(date.getHours()) + ':' 
+    		+ pad(date.getMinutes()) + ':' 
+    		+ pad(date.getSeconds());
+    }
 	
 })(mui, window.app = {});

@@ -12,7 +12,7 @@
 <body>
 	<header class="mui-bar mui-bar-nav">
 		<a id="setting" class="mui-icon iconfont mui-pull-left">&#xe619;</a>
-		<a id="car" class="mui-icon iconfont mui-pull-right">&#xe61c;</a>
+		<a id="car" class="mui-icon iconfont mui-pull-right" data-type="1">&#xe61c;</a>
 		<h1 id="title" class="mui-title">入库单</h1>
 	</header>
 	<nav class="mui-bar mui-bar-tab">
@@ -37,10 +37,12 @@
 	<script src="../js/app.js"></script>
 	<script>
 		!function($, doc) {
+			
+			$.init();
+			
 			var settingBtn = doc.getElementById('setting');
 			var carBtn = doc.getElementById('car');
 			
-			$.init();
 			window.addEventListener('login.before.show', function() {
 				var state = app.getState();
 				app.getRemoteSummary(function(data) {
@@ -51,21 +53,28 @@
 					$.fire(order_in_page, 'before.show');
 					$.fire(order_out_page, 'before.show');
 					$.fire(stock_srch_page, 'before.show');
-				});
-			})
+				}, true);
+			});
+			
+			var subpages = ['order-in.html', 'order-out.html', 'stock-srch.html', 'finance-srch.html'];
+			var subpages_style = {
+				top: "46px",
+				bottom: "50px",
+				bounce: "vertical"
+			}
+			
+			var aniShow = {};
 			
 			$.plusReady(function() {
 				var main = plus.webview.currentWebview();
-				var subpages = ['order-in.html', 'order-out.html', 'stock-srch.html', 'finance-srch.html'];
-				var subpages_style = {
-					top: "46px",
-					bottom: "50px",
-					bounce: "vertical"
-				}
 				for (var i = 0; i < 4; i++) {
+					var temp = {};
 					var sub = plus.webview.create(subpages[i], subpages[i], subpages_style);
 					if (i > 0) {
 						sub.hide();
+					} else {
+						temp[subpages[i]] = "true";
+						$.extend(aniShow, temp);
 					}
 					main.append(sub);
 				}
@@ -92,13 +101,23 @@
 						case 4:
 							carBtn.innerHTML = '';
 							carBtn.setAttribute('data-type', 4);
+							var page = plus.webview.getWebviewById('finance-srch.html');
+							$.fire(page, 'before.show');
 							break;
 					}
 					if (targetTab == activeTab) {
 						return;
 					}
 					title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
-					plus.webview.show(targetTab);
+					if ($.os.ios || aniShow[targetTab]) {
+						plus.webview.show(targetTab);
+					} else {
+						//第一次show的方式
+						var temp = {};
+						temp[targetTab] = "true";
+						$.extend(aniShow, temp);
+						plus.webview.show(targetTab, "fade-in", 300);
+					}
 					plus.webview.hide(activeTab);
 					activeTab = targetTab;
 				});
@@ -110,20 +129,15 @@
 						type: type
 					});
 					setTimeout(function() {
-						car_page.show('pop-in');
+						car_page.show(app.ANISHOW, app.DURATION_TIME);
 					}, 100);
-				})
+				});
 				
 				settingBtn.addEventListener('tap', function(e) {
-					$.openWindow({
-						"id": "setting",
-						"show": {
-							"aniShow": "pop-in"
-						},
-						"waiting": {
-							"autoShow": false
-						}
-					})
+					var setting_page = plus.webview.getWebviewById('setting');
+					setTimeout(function() {
+						setting_page.show(app.ANISHOW, app.DURATION_TIME);
+					}, 100);
 				});
 				
 				$.oldBack = mui.back;

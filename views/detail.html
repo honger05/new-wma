@@ -6,6 +6,11 @@
 		<title></title>
 		<link rel="stylesheet" href="../css/mui.min.css" />
 		<link rel="stylesheet" href="../css/app.css" />
+		<style type="text/css">
+			.mui-loading{
+				margin-top: 100px;
+			}
+		</style>
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav">
@@ -13,104 +18,25 @@
 			<a class="mui-icon iconfont mui-pull-right" id="orderOK">&#xe62c;</a>
 			<h1 id="title" class="mui-title">详情</h1>
 		</header>
-		<div class="mui-content" id="content"></div>
-		
-		<script id="detail" type="text/x-handlebars-template">
-			<div class="cl-goods-panel">
-				<img id="imgUrl" class="mui-pull-left cl-goods-object" src="{{imgUrl}}" />
-				<div class="cl-goods-info">
-					<h1 id="goodsName" class="cl-goods-info-title">{{goodsName}}</h1>
-					<p id="goodsCode" class="cl-goods-info-desc">{{goodsCode}}</p>
-				</div>
-			</div>
-			{{#equal type 1}}
-			<ul class="mui-table-view cl-table-header">
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-4 cl-triangle">尺码</span>
-					<span class="mui-col-xs-3 cl-triangle">颜色</span>
-					<span class="mui-col-xs-5 cl-triangle">数量</span>
-				</li>
-			</ul>
-			<ul class="mui-table-view cl-table-body">
-				{{#each goodsInfo}}
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-4">{{goodsSku.size}}</span>
-					<span class="mui-col-xs-3">{{goodsSku.color}}</span>
-					<span class="mui-col-xs-5 cl-numbox-span">
-						<div class="mui-numbox" data-numbox-min='0'>
-							<button class="mui-btn mui-numbox-btn-minus">-</button>
-							<input type="number" class="mui-numbox-input" data-size="{{goodsSku.size}}" data-color="{{goodsSku.color}}" data-goods-id="{{goodsId}}"/>
-							<button class="mui-btn mui-numbox-btn-plus">+</button>
-						</div>
-					</span>
-				</li>
-				{{/each}}
-			</ul>
-			{{/equal}}
-			{{#equal type 2}}
-			<ul class="mui-table-view cl-table-header">
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-2 cl-triangle">尺码</span>
-					<span class="mui-col-xs-3 cl-triangle">颜色</span>
-					<span class="mui-col-xs-2 cl-triangle">库存量</span>
-					<span class="mui-col-xs-5 cl-triangle">下单数量</span>
-				</li>
-			</ul>
-			<ul class="mui-table-view cl-table-body">
-				{{#each goodsInfo}}
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-2">{{goodsSku.size}}</span>
-					<span class="mui-col-xs-3">{{goodsSku.color}}</span>
-					<span class="mui-col-xs-2">{{quantity}}</span>
-					<span class="mui-col-xs-5 cl-numbox-span">
-						<div class="mui-numbox" data-numbox-min="0" data-numbox-max="{{quantity}}">
-							<button class="mui-btn mui-numbox-btn-minus">-</button>
-							<input type="number" class="mui-numbox-input" data-size="{{goodsSku.size}}" data-color="{{goodsSku.color}}" data-goods-id="{{goodsId}}"/>
-							<button class="mui-btn mui-numbox-btn-plus">+</button>
-						</div>
-					</span>
-				</li>
-				{{/each}}
-			</ul>
-			{{/equal}}
-			{{#equal type 3}}
-			<ul class="mui-table-view cl-table-header">
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-3 cl-triangle">尺码</span>
-					<span class="mui-col-xs-3 cl-triangle">颜色</span>
-					<span class="mui-col-xs-3 cl-triangle">库存数量</span>
-					<span class="mui-col-xs-3 cl-triangle">库龄</span>
-				</li>
-			</ul>
-			<ul class="mui-table-view cl-table-body">
-				{{#each goodsInfo}}
-				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-3">{{goodsSku.size}}</span>
-					<span class="mui-col-xs-3">{{goodsSku.color}}</span>
-					<span class="mui-col-xs-3">{{quantity}}</span>
-					<span class="mui-col-xs-3">0</span>
-				</li>
-				{{/each}}
-			</ul>
-			{{/equal}}
-		</script>
 		<script src="../js/mui.min.js"></script>
-		<script src="../js/handlebars-v2.0.0.js"></script>
-		<script src="../js/helper.js"></script>
 		<script src="../js/app.js"></script>
 		<script>
 			!function($, doc) {
 				
-				var detailSource = doc.getElementById('detail').innerHTML;
-				var detailTemplate = Handlebars.compile(detailSource);
-				var contentEl = doc.getElementById('content');
-				var divEl = doc.createElement('div');
-				var titleEl = doc.getElementById('title');
+				var sub_page;
+				
+				$.init({
+					beforeback: function() {
+						app.setOrder({});
+						$.fire(sub_page, 'beforeback');
+					}
+				});
+				
 				var orderOKEl = doc.getElementById('orderOK');
-				var order = {};
+				var titleEl = doc.getElementById('title');
 				
 				window.addEventListener('before.show', function(e) {
-					contentEl.innerHTML = '';
+					sub_page = plus.webview.getWebviewById('detail-sub');
 					switch (e.detail.type) {
 						case 1:
 							orderOKEl.innerHTML = '&#xe62c;';
@@ -124,17 +50,16 @@
 							orderOKEl.innerHTML = '';
 							titleEl.innerHTML = '库存查询';
 							break;
-					}
-					var barCode = e.detail.barCode;
-					order.type = e.detail.type;
-					app.getRemoteDetail(barCode, function(data) {
-						data.imgUrl = e.detail.imgUrl;
-						data.type = e.detail.type;
-						render(data);
-					})
-				})
+					};
+					$.fire(sub_page, 'before.show.sub', {
+						barCode: e.detail.barCode,
+						type: e.detail.type,
+						imgUrl: e.detail.imgUrl
+					});
+				});
 				
 				orderOKEl.addEventListener('tap', function() {
+					var order = app.getOrder();
 					if (order.datas.length == 0) {
 						plus.nativeUI.toast('请选择商品数量');
 						return;
@@ -144,55 +69,9 @@
 					var orders = app.getOrders();
 					mix(orders, order);
 					app.setOrders(orders);
-//					$.fire(car_page, 'before.show', {
-//						type: order.type
-//					});
 					currentWebview.hide('fade-out');
 					plus.nativeUI.toast('产品已添加到入库单');
 				});
-				
-				function render(data) {
-//					app.setOrders();
-					order.datas = [];
-					divEl.innerHTML = detailTemplate(data);
-					contentEl.appendChild(divEl);
-					$('.mui-numbox').numbox();
-					var imgUrl = doc.getElementById('imgUrl').src;
-					var goodsName = doc.getElementById('goodsName').innerHTML;
-					var goodsCode = doc.getElementById('goodsCode').innerHTML;
-					$('.mui-numbox').on('change', 'input', function() {
-						var goodsId = this.getAttribute('data-goods-id');
-						var size = this.getAttribute('data-size');
-						var color = this.getAttribute('data-color');
-						
-						var num = parseInt(this.value);
-						if (num == 0) return;
-						var index = indexOf(order.datas, goodsId);
-						if (index === -1) {
-							order.datas.push({
-								goodsId: goodsId,
-								num: num,
-								imgUrl: imgUrl,
-								goodsName: goodsName,
-								goodsCode: goodsCode,
-								size: size,
-								color: color
-							})
-						} else {
-							order.datas[index].num = num;
-						}
-//						alert(JSON.stringify(order))
-					});
-				}
-				
-				function indexOf(datas, goodsId) {
-					for (var i = 0, len = datas.length; i < len; i++) {
-						if (datas[i].goodsId == goodsId) {
-							return i;
-						}
-					}
-					return -1;
-				}
 				
 				function mix(orders, order) {
 					if (orders.length == 0) {
@@ -222,7 +101,6 @@
 						orders.push(order);
 					}
 				}
-				
 			}(mui, document);
 		</script>
 	</body>

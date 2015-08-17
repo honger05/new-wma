@@ -72,6 +72,9 @@
 				width: 100%;
 				height: auto;
 			}
+			.mui-loading{
+				margin-top: 100px;
+			}
 		</style>
 	</head>
 	<body>
@@ -81,7 +84,7 @@
 			<h1 class="mui-title" id="title"></h1>
 		</header>
 		<nav class="mui-bar mui-bar-tab">
-			<a class="mui-tab-item">总计：<span class="fn-rmb">200</span> 元</a>
+			<a class="mui-tab-item">总计：<span class="fn-rmb" id="sum-rmb">0</span> 元</a>
 		</nav>
 		<div class="mui-content cl-scroll-content" id="content">
 			<div class="mui-scroll-wrapper">
@@ -118,7 +121,7 @@
 						<span class="mui-col-xs-5 cl-numbox-span">
 							<div class="mui-numbox">
 								<button class="mui-btn mui-numbox-btn-minus">-</button>
-								<input type="number" class="mui-numbox-input" value="{{num}}"/>
+								<input type="number" class="mui-numbox-input" data-goods-id="{{goodsId}}" value="{{num}}"/>
 								<button class="mui-btn mui-numbox-btn-plus">+</button>
 							</div>
 						</span>
@@ -133,14 +136,13 @@
 		<script src="../js/app.js"></script>
 		<script>
 			!function($, doc) {
-				$.init();	
-				$('.mui-scroll-wrapper').scroll();
 				
 				var carSource = doc.getElementById('car-template').innerHTML;
 				var carTemplate = Handlebars.compile(carSource);
 				var scrollEl = doc.getElementById('scroll');
 				var titleEl = doc.getElementById('title');
 				var stockEl = doc.getElementById('stock');
+				var sumRmbEl = doc.getElementById('sum-rmb');
 				var type;
 				
 				window.addEventListener('before.show', function(e) {
@@ -156,12 +158,28 @@
 							break;
 					}
 					var orders = app.getOrders();
+					console.log(JSON.stringify(orders));
+					var typeFlag = false;
 					for (var i = orders.length - 1; i >= 0; i--) {
 						if (orders[i].type == type) {
-							var sortData = sortByGoodsCode(orders[i].datas);
+							typeFlag = true;
+							var oDatas = orders[i].datas;
+							var sortData = sortByGoodsCode(oDatas);
 							scrollEl.innerHTML = carTemplate(sortData);
+							$('.mui-numbox').numbox();
+							$('.mui-numbox').on('change', 'input', function() {
+								var goodsId = this.getAttribute('data-goods-id');
+								var num = parseInt(this.value);
+								var index = indexOf(oDatas, goodsId);
+								if (index !== -1) oDatas[index].num = num;
+								app.setOrders(orders);
+							});
+							$('.mui-scroll-wrapper').scroll();
 							break;
 						}
+					}
+					if (!typeFlag) {
+						scrollEl.innerHTML = '空空如也';
 					}
 				});
 				
@@ -170,8 +188,15 @@
 					var orders = app.getOrders();
 					for (var i = orders.length - 1; i >= 0; i--) {
 						if (orders[i].type == type) {
-							app[methodName](orders[i].datas, function() {
-								alert('ok')
+							app[methodName](orders[i].datas, function(ret) {
+								plus.nativeUI.toast(ret.extraInfo.message);
+								if (ret.extraInfo.status == 1) {
+									orders.splice(i, 1);
+									app.setOrders(orders);
+									console.log(JSON.stringify(orders));
+									var currentWebview = plus.webview.currentWebview();
+									currentWebview.hide('fade-out');
+								}
 							});
 							break;
 						}
@@ -206,6 +231,23 @@
 					}
 					
 					return goodsGroup;
+				}
+				
+				function indexOf(datas, goodsId) {
+					for (var i = 0, len = datas.length; i < len; i++) {
+						if (datas[i].goodsId == goodsId) {
+							return i;
+						}
+					}
+					return -1;
+				}
+				
+				var old_back = $.back;
+				$.back = function() {
+					setTimeout(function() {
+						scrollEl.innerHTML = '';
+					}, 200);
+					old_back();
 				}
 				
 			}(mui, document);

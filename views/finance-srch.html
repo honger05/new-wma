@@ -23,6 +23,9 @@
 				width: 100%;
 				height: auto;
 			}
+			.mui-loading{
+				margin-top: 100px;
+			}
 		</style>
 	</head>
 	<body>
@@ -36,18 +39,24 @@
 			</ul>
 			<div class="cl-scroll-content">
 				<div class="mui-scroll-wrapper">
-					<div class="mui-scroll" id="scroll"></div>
+					<div class="mui-scroll" id="scroll">
+						<div class="mui-loading">
+							<div class="mui-spinner"></div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 		
 		<script id="listTemplate" type="text/x-handlebars-template">
 			<ul class="mui-table-view cl-table-body">
+				{{#each this}}
 				<li class="mui-table-view-cell">
-					<span class="mui-col-xs-4">接货费</span>
-					<span class="mui-col-xs-4">111.00</span>
-					<span class="mui-col-xs-4">2014-04-03</span>
+					<span class="mui-col-xs-4">{{feeName}}</span>
+					<span class="mui-col-xs-4">{{amount}}</span>
+					<span class="mui-col-xs-4">{{operatorTime}}</span>
 				</li>
+				{{/each}}
 			</ul>
 		</script>		
 		<script src="../js/mui.min.js"></script>
@@ -61,30 +70,27 @@
 				var listSource = doc.getElementById('listTemplate').innerHTML;
 				var listTemplate = Handlebars.compile(listSource);
 				
-				$.init();
-				$('.mui-scroll-wrapper').scroll();
-				
-				window.addEventListener('login.before.show', function() {
+				window.addEventListener('before.show', function() {
 					app.getRemoteFinacial(function(data) {
-						alert(JSON.stringify(data));
 						scrollEl.innerHTML = listTemplate(data);
-					})
+						$('.mui-scroll-wrapper').scroll();
+					}, true);
 				});
 				
-				cl.dbReady(function(isFirst) {
+//				cl.dbReady(function(isFirst) {
 //					cl.addGoods([['3', 'b001', 'nike', 3], ['2', 'b002', 'addidas', 33]]);
 //					cl.getGoods(function(goods) {
 //						for (var i = goods.length - 1; i >= 0; i--) {
 //							alert(JSON.stringify(goods.item(i)))
 //						}
 //					});
-					
-					cl.getGoodsByBarCode('b001', function(goods){
-						for (var i = goods.length - 1; i >= 0; i--) {
-							alert(JSON.stringify(goods.item(i)))
-						}
-					});
-				});
+//					
+//					cl.getGoodsByBarCode('b001', function(goods){
+//						for (var i = goods.length - 1; i >= 0; i--) {
+//							alert(JSON.stringify(goods.item(i)))
+//						}
+//					});
+//				});
 				
 			}(mui, document);
 		</script>
