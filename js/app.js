@@ -1,5 +1,5 @@
 ;(function($, owner) {
-	var HOSTNAME = 'http://192.168.1.108:8080/';
+	var HOSTNAME = 'http://192.168.10.215/';
 	var URL_LOGIN = HOSTNAME + 'cl-restapi/login.do';
 	var URL_SUMMARY = HOSTNAME + 'cl-restapi/stock/query/summary.do';
 	var URL_DETAIL = HOSTNAME + 'cl-restapi/stock/query/detail.do';
@@ -12,7 +12,9 @@
 	var STOCK_OUT_TYPE = 'com.chenlai.cloud.wms.stockout.order.entity.StockOutOrder';
 	var STOCK_OUT_GOODS_TYPE = 'com.chenlai.cloud.wms.goods.entity.OrderGodos';
 	var STATIC_TYPE = 'com.chenlai.cloud.paas.common.entity.StaticExchangeEntity';
-	var DYNAMIC_TYPE = 'com.chenlai.cloud.paas.common.entity.DynamicEntity';
+	var DYNAMIC_TYPE = 'com.chenlai.cloud.paas.common.entity.DynamicExchangeEntity';
+	var D_DYNAMIC_TYPE = 'com.chenlai.cloud.paas.common.entity.DynamicEntity';
+	
 	var TIMEOUT = 10 * 1000;
 	
 	owner.DURATION_TIME = 250;
@@ -69,25 +71,25 @@
 		}, no_mask)
 	};
 	
-	owner.getRemoteGoods = function(callback) {
+	owner.getRemoteGoodsRefresh = function(callback, no_mask) {
 		var state = app.getState();
 		var goods = {
-			"@type": DYNAMIC_TYPE,
+			"@type": D_DYNAMIC_TYPE,
 			"clientType": "M",
 			"version": 0,
 			tenantId: state.tenantId,
 			userCode: state.userCode
 		}
 		var staticExchangeEntity = {
-			"@type": STATIC_TYPE,
+			"@type": DYNAMIC_TYPE,
 			main: [goods]
 		}
-		this.ajax(URL_GOODS_REFRESH, {
-			data: staticExchangeEntity,
+		this.ajax(URL_GOODS_REFRESH + '?authtoken=' + state.authtoken, {
+			dataJson: staticExchangeEntity,
 			successHandle: function(data) {
-				callback && callback(data);
+				callback && callback(data.main);
 			}
-		})
+		}, no_mask);
 	};
 	
 	owner.getRemoteSummary = function(callback, no_mask) {
@@ -284,6 +286,16 @@
 	owner.getOrder = function() {
 		var orderText = localStorage.getItem('$order') || '{}';
 		return JSON.parse(orderText);
+	}
+	
+	owner.setCacheVersion = function(cacheVersion) {
+		var cacheVersion = cacheVersion || {};
+		localStorage.setItem('$cacheVersion', JSON.stringify(cacheVersion));
+	}
+	
+	owner.getCacheVersion = function() {
+		var cacheVersionText = localStorage.getItem('$cacheVersion') || '{}';
+		return JSON.parse(cacheVersionText);
 	}
 	
 	owner.ajax = function(url, config, no_mask) {

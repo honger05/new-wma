@@ -35,6 +35,9 @@
 				var orderOKEl = doc.getElementById('orderOK');
 				var titleEl = doc.getElementById('title');
 				
+				/**
+				 * 打开之前处理的操作
+				 */
 				window.addEventListener('before.show', function(e) {
 					sub_page = plus.webview.getWebviewById('detail-sub');
 					switch (e.detail.type) {
@@ -58,6 +61,9 @@
 					});
 				});
 				
+				/**
+				 * 将产品添加到出入库单
+				 */
 				orderOKEl.addEventListener('tap', function() {
 					var order = app.getOrder();
 					if (order.datas.length == 0) {
@@ -73,6 +79,11 @@
 					plus.nativeUI.toast('产品已添加到入库单');
 				});
 				
+				/**
+				 * 将多条记录组装成一条记录
+				 * @param {Object} orders
+				 * @param {Object} order
+				 */
 				function mix(orders, order) {
 					if (orders.length == 0) {
 						orders.push(order);

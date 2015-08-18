@@ -99,9 +99,11 @@
 			{{/equal}}
 		</script>
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/html5sql.js"></script>
 		<script src="../js/handlebars-v2.0.0.js"></script>
 		<script src="../js/helper.js"></script>
 		<script src="../js/app.js"></script>
+		<script src="../js/goods.js"></script>
 		<script>
 			!function($, doc) {
 				
@@ -116,21 +118,39 @@
 					var imgUrl = e.detail.imgUrl;
 					var type = e.detail.type;
 					order.type = type;
-					app.getRemoteDetail(barCode, function(data) {
-						data.imgUrl = imgUrl;
-						data.type = type;
-						setTimeout(function() {
-							render(data);
-						}, app.DURATION_TIME);
-					}, true);
+					if (type == 1) {
+						cl.dbReady(function() {
+							cl.getGoodsByBarCode(barCode, function(data) {
+								data.type = type;
+								setTimeout(function() {
+									render(data);
+								}, app.DURATION_TIME);
+							});
+						});
+					} else {
+						app.getRemoteDetail(barCode, function(data) {
+							data.imgUrl = imgUrl;
+							data.type = type;
+							setTimeout(function() {
+								render(data);
+							}, app.DURATION_TIME);
+						}, true);						
+					}
 				});
 				
+				/**
+				 * 页面关闭之前的操作 
+				 */
 				window.addEventListener('beforeback', function(e) {
 					setTimeout(function() {
 						contentEl.innerHTML = '<div class="mui-loading"><div class="mui-spinner"></div></div>';
 					}, app.DURATION_TIME);
 				});
 				
+				/**
+				 * 渲染组件 
+				 * @param {Object} data
+				 */
 				function render(data) {
 					order.datas = [];
 					contentEl.innerHTML = detailTemplate(data);

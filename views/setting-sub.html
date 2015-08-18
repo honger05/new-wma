@@ -45,7 +45,7 @@
 				var userCodeEl = doc.getElementById('userCode');
 				var regTimeEl = doc.getElementById('regTime');
 				
-				window.addEventListener('login.before.show', function() {
+				window.addEventListener('before.show.sub', function() {
 					var state = app.getState();
 					userNameEl.innerText = state.userName;
 					userCodeEl.innerText = state.userCode;

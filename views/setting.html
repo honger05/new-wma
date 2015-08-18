@@ -24,6 +24,14 @@
 				
 				$.init();
 				
+				/**
+				 * 打开之前处理的操作
+				 */
+				window.addEventListener('login.before.show', function(e) {
+					sub_page = plus.webview.getWebviewById('setting-sub');
+					$.fire(sub_page, 'before.show.sub');
+				});
+				
 			}(mui, document);
 		</script>
 	</body>
