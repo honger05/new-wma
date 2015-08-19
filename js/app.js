@@ -19,8 +19,8 @@
 	
 	owner.DURATION_TIME = 250;
 	owner.ANISHOW = 'pop-in';
-	if ($.os.android) {
-		owner.DURATION_TIME = 250;
+	if ($.os.android && parseFloat($.os.version) < 4.4) {
+		owner.DURATION_TIME = 150;
 		owner.ANISHOW = 'slide-in-right';
 	}
 	

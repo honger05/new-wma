@@ -16,7 +16,7 @@
 }
 
 /* reset mui */
-.mui-title {
+/*.mui-title {
 	color: #FFFFFF;
 }
 
@@ -41,6 +41,14 @@
 	color: #fff;
 	border: 1px solid #333;
 	background-color: #333;
+}*/
+
+.mui-bar-tab .mui-tab-item.mui-active {
+	color: #F71454;
+}
+
+.mui-bar.mui-bar-nav .mui-icon {
+	color: #F71454;
 }
 
 /* cl-goods */
@@ -133,7 +141,6 @@
 
 .cl-tab-menu > li > a:focus,
 .cl-tab-menu > li > a:hover,
-.cl-tab-menu > li > a:active,
 .cl-tab-menu > li.active-0 > a {
 	border-left: 2px solid red;
 	border-right-color: transparent;
@@ -167,9 +174,4 @@
 .cl-tab-content > div.active-0 {
 	display: block;
 }
-
-/*.cl-tab-content :target {
-	z-index: 1;
-}*/
-
 

@@ -50,15 +50,7 @@
 				app.getRemoteSummary(function(data) {
 					app.setSummary(data);
 					var order_in_page = plus.webview.getWebviewById('order-in.html');
-					var order_out_page = plus.webview.getWebviewById('order-out.html');
-					var stock_srch_page = plus.webview.getWebviewById('stock-srch.html');
 					$.fire(order_in_page, 'before.show');
-					setTimeout(function() {
-						$.fire(order_out_page, 'before.show');
-					}, 200);
-					setTimeout(function() {
-						$.fire(stock_srch_page, 'before.show');	
-					}, 400);
 					
 					/**
 					 * 加载缓存
@@ -77,7 +69,7 @@
 									cacheVersion['w_pub_goods'] = version;
 									app.setCacheVersion(cacheVersion);		
 								}
-								for (var j = records.length - 1; j >= 0; j--)	 {
+								for (var j = records.length - 1; j >= 0; j--) {
 									temp_goods.push([
 										records[j].goodsId,
 										records[j].goodsCode,
@@ -129,6 +121,8 @@
 				var activeTab = subpages[0];
 				var title = doc.getElementById('title');
 				
+				var first_order_out = true, first_stock_srch = true, first_finance_srch = true;
+				
 				$('.mui-bar-tab').on('tap', 'a', function(event) {
 					var targetTab = this.getAttribute('href');
 					var type = parseInt(this.getAttribute('data-type'));
@@ -140,16 +134,29 @@
 						case 2:
 							carBtn.innerHTML = '&#xe61b;';
 							carBtn.setAttribute('data-type', 2);
+							if (first_order_out) {
+								var order_out_page = plus.webview.getWebviewById('order-out.html');
+								$.fire(order_out_page, 'before.show');
+								first_order_out = false;
+							}
 							break;
 						case 3:
-							carBtn.innerHTML = '';
+							carBtn.innerHTML = '&#xe64e;';
 							carBtn.setAttribute('data-type', 3);
+							if (first_stock_srch) {
+								var stock_srch_page = plus.webview.getWebviewById('stock-srch.html');
+								$.fire(stock_srch_page, 'before.show');	
+								first_stock_srch = false;
+							}
 							break;
 						case 4:
-							carBtn.innerHTML = '';
+							carBtn.innerHTML = '&#xe64e;';
 							carBtn.setAttribute('data-type', 4);
-							var page = plus.webview.getWebviewById('finance-srch.html');
-							$.fire(page, 'before.show');
+							if (first_finance_srch) {
+								var page = plus.webview.getWebviewById('finance-srch.html');
+								$.fire(page, 'before.show');
+								first_finance_srch = false;
+							}
 							break;
 					}
 					if (targetTab == activeTab) {
@@ -183,7 +190,7 @@
 				settingBtn.addEventListener('tap', function(e) {
 					var setting_page = plus.webview.getWebviewById('setting');
 					setTimeout(function() {
-						setting_page.show(app.ANISHOW, app.DURATION_TIME);
+						setting_page.show('slide-in-bottom');
 					}, 100);
 				});
 				
