@@ -16,19 +16,19 @@
 		<h1 id="title" class="mui-title">入库单</h1>
 	</header>
 	<nav class="mui-bar mui-bar-tab">
-		<a href="order-in.html" id="defaultTab" class="mui-tab-item mui-active" data-type="1">
+		<a href="order-in.html" id="order-in.html" class="mui-tab-item mui-active" data-type="1">
 			<span class="mui-icon iconfont">&#xe65a;</span>
 			<span class="mui-tab-label">入库单</span>
 		</a>
-		<a href="order-out.html" class="mui-tab-item" data-type="2">
+		<a href="order-out.html" id="order-out.html" class="mui-tab-item" data-type="2">
 			<span class="mui-icon iconfont">&#xe664;</span>
 			<span class="mui-tab-label">出库单</span>
 		</a>
-		<a href="stock-srch.html" class="mui-tab-item" data-type="3">
+		<a href="stock-srch.html" id="stock-srch.html" class="mui-tab-item" data-type="3">
 			<span class="mui-icon iconfont">&#xe656;</span>
 			<span class="mui-tab-label">库存查询</span>
 		</a>
-		<a href="finance-srch.html" class="mui-tab-item" data-type="4">
+		<a href="finance-srch.html" id="finance-srch.html" class="mui-tab-item" data-type="4">
 			<span class="mui-icon iconfont">&#xe659;</span>
 			<span class="mui-tab-label">财务查询</span>
 		</a>
@@ -44,12 +44,154 @@
 			
 			var settingBtn = doc.getElementById('setting');
 			var carBtn = doc.getElementById('car');
+			var titleEl = doc.getElementById('title');
+			var car_page = null, setting_page = null, order_in_page = null, order_out_page = null, stock_srch_page = null, finance_page = null;
+			var first_order_out = true, first_stock_srch = true, first_finance_srch = true;
+			
+			var subpages = ['order-in.html', 'order-out.html', 'stock-srch.html', 'finance-srch.html'];
+			var subpages_style = {
+				top: "46px",
+				bottom: "50px",
+				bounce: "vertical"
+			}
+			
+			var activeTab = subpages[0];
+			
+			var defaultTabEl = doc.getElementById(activeTab);
+			
+			var aniShow = {};
+			
+			$.plusReady(function() {
+				var main = plus.webview.currentWebview();
+				setTimeout(function() {
+					for (var i = 0; i < 4; i++) {
+						var temp = {};
+						var sub = plus.webview.create(subpages[i], subpages[i], subpages_style);
+						if (i > 0) {
+							sub.hide();
+						} else {
+							temp[subpages[i]] = "true";
+							$.extend(aniShow, temp);
+						}
+						main.append(sub);
+					}
+				}, 3000)
+				
+				$('.mui-bar-tab').on('tap', 'a', function(event) {
+					var targetTab = this.getAttribute('href');
+					var type = parseInt(this.getAttribute('data-type'));
+					if (targetTab == activeTab) {
+						return;
+					}
+					var titleText = this.querySelector('.mui-tab-label').innerHTML;
+					changeView(activeTab, targetTab, titleText);
+					activeTab = targetTab;
+					switch (type){
+						case 1:
+							carBtn.innerHTML = '&#xe61c;';
+							carBtn.setAttribute('data-type', 1);
+							break;
+						case 2:
+							carBtn.innerHTML = '&#xe61b;';
+							carBtn.setAttribute('data-type', 2);
+							if (first_order_out) {
+								if (!order_out_page) {
+									order_out_page = plus.webview.getWebviewById('order-out.html');
+								}
+								$.fire(order_out_page, 'before.show');
+								first_order_out = false;
+							}
+							break;
+						case 3:
+							carBtn.innerHTML = '&#xe64e;';
+							carBtn.setAttribute('data-type', 3);
+							if (first_stock_srch) {
+								if (!stock_srch_page) {
+									stock_srch_page = plus.webview.getWebviewById('stock-srch.html');
+								}
+								$.fire(stock_srch_page, 'before.show');	
+								first_stock_srch = false;
+							}
+							break;
+						case 4:
+							carBtn.innerHTML = '&#xe64e;';
+							carBtn.setAttribute('data-type', 4);
+							if (first_finance_srch) {
+								if (!finance_page) {
+									finance_page = plus.webview.getWebviewById('finance-srch.html');
+								}
+								$.fire(finance_page, 'before.show');
+								first_finance_srch = false;
+							}
+							break;
+					}
+				});
+				
+				$.oldBack = mui.back;
+				var backButtonPress = 0;
+				$.back = function(event) {
+					backButtonPress++;
+					if (backButtonPress > 1) {
+						plus.runtime.quit();
+					} else {
+						plus.nativeUI.toast('再按一次退出应用');
+					}
+					setTimeout(function() {
+						backButtonPress = 0;
+					}, 1000);
+					return false;
+				}
+				
+			});
+			
+			function changeView(activeTab, targetTab, titleText) {
+				titleEl.innerHTML = titleText;
+				if ($.os.ios || aniShow[targetTab]) {
+					plus.webview.show(targetTab, "fade-in", 150);
+				} else {
+					//第一次show的方式
+					var temp = {};
+					temp[targetTab] = "true";
+					$.extend(aniShow, temp);
+					plus.webview.show(targetTab, "fade-in", 300);
+				}
+				plus.webview.hide(activeTab);
+			};
+			
+			carBtn.addEventListener('tap', function(e) {
+				if (!car_page) {
+					car_page = plus.webview.getWebviewById('car');
+				}
+				var type = this.getAttribute('data-type');
+				car_page.show(app.ANISHOW, app.DURATION_TIME);
+				setTimeout(function() {
+					$.fire(car_page, 'before.show', {
+						type: type
+					});
+				}, 400)
+			});
+			
+			settingBtn.addEventListener('tap', function(e) {
+				if (!setting_page) {
+					setting_page = plus.webview.getWebviewById('setting');
+				}
+				$.fire(setting_page, 'login.before.show');
+				setting_page.show('slide-in-bottom');
+			});
 			
 			window.addEventListener('login.before.show', function() {
+				if (activeTab !=  subpages[0]) {
+					plus.webview.show(subpages[0]);
+					titleEl.innerHTML = '入库单';
+					activeTab = subpages[0];
+				}
+				first_order_out = true, first_stock_srch = true, first_finance_srch = true;
 				var state = app.getState();
 				app.getRemoteSummary(function(data) {
 					app.setSummary(data);
-					var order_in_page = plus.webview.getWebviewById('order-in.html');
+					if (!order_in_page) {
+						order_in_page = plus.webview.getWebviewById('order-in.html');
+					}
 					$.fire(order_in_page, 'before.show');
 					
 					/**
@@ -95,120 +237,13 @@
 				}, true);
 			});
 			
-			var subpages = ['order-in.html', 'order-out.html', 'stock-srch.html', 'finance-srch.html'];
-			var subpages_style = {
-				top: "46px",
-				bottom: "50px",
-				bounce: "vertical"
-			}
-			
-			var aniShow = {};
-			
-			$.plusReady(function() {
-				var main = plus.webview.currentWebview();
-				for (var i = 0; i < 4; i++) {
-					var temp = {};
-					var sub = plus.webview.create(subpages[i], subpages[i], subpages_style);
-					if (i > 0) {
-						sub.hide();
-					} else {
-						temp[subpages[i]] = "true";
-						$.extend(aniShow, temp);
-					}
-					main.append(sub);
-				}
-				
-				var activeTab = subpages[0];
-				var title = doc.getElementById('title');
-				
-				var first_order_out = true, first_stock_srch = true, first_finance_srch = true;
-				
-				$('.mui-bar-tab').on('tap', 'a', function(event) {
-					var targetTab = this.getAttribute('href');
-					var type = parseInt(this.getAttribute('data-type'));
-					switch (type){
-						case 1:
-							carBtn.innerHTML = '&#xe61c;';
-							carBtn.setAttribute('data-type', 1);
-							break;
-						case 2:
-							carBtn.innerHTML = '&#xe61b;';
-							carBtn.setAttribute('data-type', 2);
-							if (first_order_out) {
-								var order_out_page = plus.webview.getWebviewById('order-out.html');
-								$.fire(order_out_page, 'before.show');
-								first_order_out = false;
-							}
-							break;
-						case 3:
-							carBtn.innerHTML = '&#xe64e;';
-							carBtn.setAttribute('data-type', 3);
-							if (first_stock_srch) {
-								var stock_srch_page = plus.webview.getWebviewById('stock-srch.html');
-								$.fire(stock_srch_page, 'before.show');	
-								first_stock_srch = false;
-							}
-							break;
-						case 4:
-							carBtn.innerHTML = '&#xe64e;';
-							carBtn.setAttribute('data-type', 4);
-							if (first_finance_srch) {
-								var page = plus.webview.getWebviewById('finance-srch.html');
-								$.fire(page, 'before.show');
-								first_finance_srch = false;
-							}
-							break;
-					}
-					if (targetTab == activeTab) {
-						return;
-					}
-					title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
-					if ($.os.ios || aniShow[targetTab]) {
-						plus.webview.show(targetTab);
-					} else {
-						//第一次show的方式
-						var temp = {};
-						temp[targetTab] = "true";
-						$.extend(aniShow, temp);
-						plus.webview.show(targetTab, "fade-in", 300);
-					}
+			window.addEventListener('logout.before.show', function() {
+				if (activeTab !=  subpages[0]) {
+					doc.getElementById(activeTab).classList.remove('mui-active');
+					defaultTabEl.classList.add('mui-active');
+					carBtn.innerHTML = '&#xe61c;';
 					plus.webview.hide(activeTab);
-					activeTab = targetTab;
-				});
-				
-				carBtn.addEventListener('tap', function(e) {
-					var car_page = plus.webview.getWebviewById('car');
-					var type = this.getAttribute('data-type');
-					$.fire(car_page, 'before.show', {
-						type: type
-					});
-					setTimeout(function() {
-						car_page.show(app.ANISHOW, app.DURATION_TIME);
-					}, 100);
-				});
-				
-				settingBtn.addEventListener('tap', function(e) {
-					var setting_page = plus.webview.getWebviewById('setting');
-					setTimeout(function() {
-						setting_page.show('slide-in-bottom');
-					}, 100);
-				});
-				
-				$.oldBack = mui.back;
-				var backButtonPress = 0;
-				$.back = function(event) {
-					backButtonPress++;
-					if (backButtonPress > 1) {
-						plus.runtime.quit();
-					} else {
-						plus.nativeUI.toast('再按一次退出应用');
-					}
-					setTimeout(function() {
-						backButtonPress = 0;
-					}, 1000);
-					return false;
 				}
-				
 			})
 			
 		}(mui, document);

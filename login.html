@@ -108,64 +108,58 @@
 				
 				function preload() {
 					$.preload({
+						"id": "setting",
+						"url": "views/setting.html",
+						"styles": {
+							"popGesture": "hide"
+						}
+					});
+					$.preload({
+						"id": "car",
+						"url": "views/car.html",
+						"styles": {
+							"popGesture": "hide"
+						}
+					});
+					$.preload({
+						"id": "detail",
+						"url": "views/detail.html",
+						"styles": {
+							"popGesture": "hide"
+						},
+						"subpages": [{
+							"id": "detail-sub",
+							"url": "views/detail-sub.html",
+							"styles": {
+								"top": "46px",
+								"popGesture": "hide",
+								"bounce": "vertical"
+							}
+						}]
+					});
+					$.preload({
 						"id": "main",
 						"url": "views/main.html"
 					});
-					setTimeout(function() {
-						$.preload({
-							"id": "setting",
-							"url": "views/setting.html",
-							"styles": {
-								"popGesture": "hide"
-							},
-							"subpages": [{
-								"id": "setting-sub",
-								"url": "views/setting-sub.html",
-								"styles": {
-									"top": "46px",
-									"popGesture": "hide"
-								}
-							}]
-						});
-						$.preload({
-							"id": "car",
-							"url": "views/car.html",
-							"styles": {
-								"popGesture": "hide"
-							}
-						});
-						$.preload({
-							"id": "detail",
-							"url": "views/detail.html",
-							"styles": {
-								"popGesture": "hide"
-							},
-							"subpages": [{
-								"id": "detail-sub",
-								"url": "views/detail-sub.html",
-								"styles": {
-									"top": "46px",
-									"popGesture": "hide"
-								}
-							}]
-						});
-					}, 1000);
 				}
 				
+				var mainPage = null; loginPage = null;
+				
 				$.plusReady(function() {
+					loginPage = plus.webview.currentWebview();
 					plus.screen.lockOrientation('portrait-primary');
 					preload();
 					var toMain = function(aniShow) {
-						var settingPage = plus.webview.getWebviewById('setting');
-						var mainPage = plus.webview.getWebviewById('main');
-						$.fire(mainPage, 'login.before.show'); 
-						$.fire(settingPage, 'login.before.show');
+						if (!mainPage) {
+							mainPage = plus.webview.getWebviewById('main');
+						}
+						mainPage.show(aniShow, app.DURATION_TIME);
 						setTimeout(function() {
-							mainPage.show(aniShow, app.DURATION_TIME);
-							setTimeout(function() {
-								plus.webview.currentWebview().hide();
-							}, 1000);
-						}, 0);
+							$.fire(mainPage, 'login.before.show'); 
+						}, 400)
+						setTimeout(function() {
+							loginPage.hide();
+						}, 1000)
 					}
 //					if (settings.autoLogin && state.authtoken) {
 //						setTimeout(function() {
@@ -175,7 +169,7 @@
 					
 					setTimeout(function() {
 						plus.navigator.closeSplashscreen();
-					}, 600);
+					}, 1000);
 					
 					button_login.addEventListener('tap', function(event) {
 						var login_info = {

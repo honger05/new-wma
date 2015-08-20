@@ -6,17 +6,10 @@
 		<title></title>
 		<link rel="stylesheet" href="../css/mui.min.css" />
 		<link rel="stylesheet" href="../css/app.css" />
-		<style type="text/css">
-			.mui-loading{
-				margin-top: 100px;
-			}
-		</style>
 	</head>
 	<body>
 		<div class="mui-content" id="content">
-			<div class="mui-loading">
-				<div class="mui-spinner"></div>
-			</div>
+			<div class="mui-loader">加载中...</div>
 		</div>
 		
 		<script id="detail" type="text/x-handlebars-template">
@@ -107,6 +100,8 @@
 		<script>
 			!function($, doc) {
 				
+				$.init();
+				
 				var detailSource = doc.getElementById('detail').innerHTML;
 				var detailTemplate = Handlebars.compile(detailSource);
 				var contentEl = doc.getElementById('content');
@@ -122,18 +117,14 @@
 						cl.dbReady(function() {
 							cl.getGoodsByBarCode(barCode, function(data) {
 								data.type = type;
-								setTimeout(function() {
-									render(data);
-								}, app.DURATION_TIME);
+								render(data);
 							});
 						});
 					} else {
 						app.getRemoteDetail(barCode, function(data) {
 							data.imgUrl = imgUrl;
 							data.type = type;
-							setTimeout(function() {
-								render(data);
-							}, app.DURATION_TIME);
+							render(data);
 						}, true);						
 					}
 				});
@@ -143,7 +134,7 @@
 				 */
 				window.addEventListener('beforeback', function(e) {
 					setTimeout(function() {
-						contentEl.innerHTML = '<div class="mui-loading"><div class="mui-spinner"></div></div>';
+						contentEl.innerHTML = '<div class="mui-loader">加载中...</div>';
 					}, app.DURATION_TIME);
 				});
 				

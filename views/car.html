@@ -137,6 +137,8 @@
 		<script>
 			!function($, doc) {
 				
+				$.init();
+				
 				var carSource = doc.getElementById('car-template').innerHTML;
 				var carTemplate = Handlebars.compile(carSource);
 				var scrollEl = doc.getElementById('scroll');

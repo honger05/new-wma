@@ -6,17 +6,10 @@
 		<title></title>
 		<link rel="stylesheet" href="../css/mui.min.css" />
 		<link rel="stylesheet" href="../css/app.css" />
-		<style>
-			.mui-loading{
-				margin-top: 100px;
-			}
-		</style>
 	</head>
 	<body>
 		<div class="mui-content" id="content">
-			<div class="mui-loading">
-				<div class="mui-spinner"></div>
-			</div>
+			<div class="mui-loader">加载中...</div>
 		</div>
 		
 		<script id="summary" type="text/x-handlebars-template">
@@ -57,44 +50,43 @@
 			!function($, doc) {
 				$.init();
 				
-				$('.mui-scroll-wrapper').scroll();
-				
 				var summarySource = doc.getElementById('summary').innerHTML;
 				var summaryTemplate = Handlebars.compile(summarySource);
 				var contentEl = doc.getElementById('content');
-				var divEl = doc.createElement('div');
 
 				function render(data) {
 					data = data || t;
-					divEl.innerHTML = summaryTemplate(data);
-					contentEl.appendChild(divEl.firstElementChild);
+					contentEl.innerHTML = summaryTemplate(data);
 					var tabs = $('.cl-tab-menu li');
 					var contents = $('.cl-tab-content > div');
+					tabs[0].classList.add('active');
+					contents[0].classList.add('active');
 					var activeTab = 0;
 					$('.cl-tab-menu').on('tap', 'li', function(e) {
 						var targetTab = indexOf(tabs, this);
 						if (targetTab == activeTab) {
 							return;
 						}
-						tabs[targetTab].classList.add('active-0');
-						contents[targetTab].classList.add('active-0');
-						tabs[activeTab].classList.remove('active-0');
-						contents[activeTab].classList.remove('active-0');
+						tabs[targetTab].classList.add('active');
+						contents[targetTab].classList.add('active');
+						tabs[activeTab].classList.remove('active');
+						contents[activeTab].classList.remove('active');
 						activeTab = targetTab;
 					})
 					$('.cl-tab-content').on('tap', 'li' ,function() {
 						var barCode = this.getAttribute('data-bar-code');
 						var imgUrl = this.getAttribute('data-img-url');
 						var detailPage = plus.webview.getWebviewById('detail');
-						$.fire(detailPage, 'before.show', {
-							"barCode": barCode,
-							"imgUrl": imgUrl,
-							"type": 3
-						});
+						detailPage.show(app.ANISHOW, app.DURATION_TIME);
 						setTimeout(function() {
-							detailPage.show(app.ANISHOW, app.DURATION_TIME);
-						}, 50);
+							$.fire(detailPage, 'before.show', {
+								"barCode": barCode,
+								"imgUrl": imgUrl,
+								"type": 3
+							});
+						}, 400);
 					})
+					$('.mui-scroll-wrapper').scroll();
 				}
 				
 				function indexOf(els, el) {
@@ -111,6 +103,10 @@
 					contentEl.innerHTML = '';
 					var summary = app.getSummary();
 					render(summary);
+				})
+				
+				window.addEventListener('logout.before.show', function() {
+					contentEl.innerHTML = '<div class="mui-loader">加载中...</div>';
 				})
 				
 			}(mui, document);

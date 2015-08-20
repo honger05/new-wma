@@ -14,9 +14,16 @@
 	font-size: 20px;
 	letter-spacing: 2px;
 }
+.mui-loader{
+	text-align: center;
+	margin-top: 100px;
+}
+.mui-loading{
+	margin-top: 100px;
+}
 
 /* reset mui */
-/*.mui-title {
+.mui-title {
 	color: #FFFFFF;
 }
 
@@ -41,15 +48,15 @@
 	color: #fff;
 	border: 1px solid #333;
 	background-color: #333;
-}*/
+}
 
-.mui-bar-tab .mui-tab-item.mui-active {
+/*.mui-bar-tab .mui-tab-item.mui-active {
 	color: #F71454;
 }
 
 .mui-bar.mui-bar-nav .mui-icon {
 	color: #F71454;
-}
+}*/
 
 /* cl-goods */
 .cl-goods-panel {
@@ -139,9 +146,7 @@
 	font-size: 12px;
 }
 
-.cl-tab-menu > li > a:focus,
-.cl-tab-menu > li > a:hover,
-.cl-tab-menu > li.active-0 > a {
+.cl-tab-menu > li.active > a {
 	border-left: 2px solid red;
 	border-right-color: transparent;
 	background-color: #fff;
@@ -171,7 +176,7 @@
 	overflow: auto;
 }
 
-.cl-tab-content > div.active-0 {
+.cl-tab-content > div.active {
 	display: block;
 }
 

@@ -23,9 +23,6 @@
 				width: 100%;
 				height: auto;
 			}
-			.mui-loading{
-				margin-top: 100px;
-			}
 		</style>
 	</head>
 	<body>
@@ -40,9 +37,7 @@
 			<div class="cl-scroll-content">
 				<div class="mui-scroll-wrapper">
 					<div class="mui-scroll" id="scroll">
-						<div class="mui-loading">
-							<div class="mui-spinner"></div>
-						</div>
+						<div class="mui-loader">加载中...</div>
 					</div>
 				</div>
 			</div>
@@ -66,6 +61,9 @@
 		<script src="../js/goods.js"></script>
 		<script>
 			!function($, doc) {
+				
+				$.init();
+				
 				var scrollEl = doc.getElementById('scroll');
 				var listSource = doc.getElementById('listTemplate').innerHTML;
 				var listTemplate = Handlebars.compile(listSource);
@@ -76,6 +74,10 @@
 						$('.mui-scroll-wrapper').scroll();
 					}, true);
 				});
+				
+				window.addEventListener('logout.before.show', function() {
+					scrollEl.innerHTML = '<div class="mui-loader">加载中...</div>';
+				})
 				
 //				cl.dbReady(function(isFirst) {
 //					cl.addGoods([['3', 'b001', 'nike', 3], ['2', 'b002', 'addidas', 33]]);
