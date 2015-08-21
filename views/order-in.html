@@ -79,14 +79,14 @@
 						if (!detailPage) {
 							detailPage = plus.webview.getWebviewById('detail');
 						}
-						detailPage.show(app.ANISHOW, app.DURATION_TIME);
+						$.fire(detailPage, 'before.show', {
+							"barCode": barCode,
+							"imgUrl": imgUrl,
+							"type": 1
+						});
 						setTimeout(function() {
-							$.fire(detailPage, 'before.show', {
-								"barCode": barCode,
-								"imgUrl": imgUrl,
-								"type": 1
-							});
-						}, 400)
+							detailPage.show(app.ANISHOW, app.DURATION_TIME);
+						}, 150)
 					})
 					$('.mui-scroll-wrapper').scroll();
 				}

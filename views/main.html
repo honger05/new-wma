@@ -163,12 +163,12 @@
 					car_page = plus.webview.getWebviewById('car');
 				}
 				var type = this.getAttribute('data-type');
-				car_page.show(app.ANISHOW, app.DURATION_TIME);
+				$.fire(car_page, 'before.show', {
+					type: type
+				});
 				setTimeout(function() {
-					$.fire(car_page, 'before.show', {
-						type: type
-					});
-				}, 400)
+					car_page.show(app.ANISHOW, app.DURATION_TIME);
+				}, 150)
 			});
 			
 			settingBtn.addEventListener('tap', function(e) {

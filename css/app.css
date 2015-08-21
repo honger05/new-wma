@@ -23,7 +23,7 @@
 }
 
 /* reset mui */
-.mui-title {
+/*.mui-title {
 	color: #FFFFFF;
 }
 
@@ -48,15 +48,15 @@
 	color: #fff;
 	border: 1px solid #333;
 	background-color: #333;
-}
+}*/
 
-/*.mui-bar-tab .mui-tab-item.mui-active {
+.mui-bar-tab .mui-tab-item.mui-active {
 	color: #F71454;
 }
 
 .mui-bar.mui-bar-nav .mui-icon {
 	color: #F71454;
-}*/
+}
 
 /* cl-goods */
 .cl-goods-panel {
