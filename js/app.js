@@ -66,7 +66,11 @@
 				authtoken: state.authtoken
 			},
 			successHandle: function(data) {
-				callback(data.main);
+				var main = data.main;
+				for (var i = 0, len = main.length; i < len; i++) {
+					main[i].operatorTime = main[i].operatorTime.slice(0, 10);	
+				}
+				callback(main);
 			}
 		}, no_mask)
 	};
@@ -194,15 +198,15 @@
 	};
 	
 	owner.stockOut = function(dataInfo, callback) {
-		var date = format(new Date());
+		var dates = format(new Date());
 		var state = app.getState();
 		var stockOutOrder = {
 			"@type": STOCK_OUT_TYPE,
 			contactor: "待定",
 			contactorPhone: "13800000000",
 			receiverName: "待定",
-			receiveTime: date,
-			orderTime: date,
+			receiveTime: dates,
+			orderTime: dates,
 			sendAddress: "待定",
 			branchCode: state.branchCode,
 			tenantId: state.tenantId,
@@ -222,7 +226,7 @@
 			main: [stockOutOrder]
 		}
 		
-		console.log(JSON.stringify(staticExchangeEtity));
+		console.log(JSON.stringify(staticExchangeEntity));
 		
 		this.ajax(URL_STOCK_OUT + '?authtoken=' + state.authtoken, {
 			dataJson: staticExchangeEntity,
@@ -324,7 +328,12 @@
 					plus.nativeUI.closeWaiting();
 				}
 				console.log(JSON.stringify(data));
-				config.successHandle && config.successHandle.apply(this, arguments);
+				if (data.errorCode === '6666') {
+					var setting_page = plus.webview.getWebviewById('setting');
+					mui.fire(setting_page, 'logout');
+				} else {
+					config.successHandle && config.successHandle.apply(this, arguments);
+				}
 			},
 			error: function(xhr, type, errorThrown) {
 				if (window.plus && !no_mask) {

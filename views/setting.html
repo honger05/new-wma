@@ -25,13 +25,10 @@
 					<a>姓名 <span class="mui-pull-right" id="userName"></span></a>
 				</li>
 				<li class="mui-table-view-cell">
-					<a>手机 <span class="mui-pull-right" id="phone">18682457945</span></a>
+					<a>手机 <span class="mui-pull-right" id="phone"></span></a>
 				</li>
 				<li class="mui-table-view-cell">
-					<a>编号 <span class="mui-pull-right" id="userCode"></span></a>
-				</li>
-				<li class="mui-table-view-cell">
-					<a>注册时间 <span class="mui-pull-right" id="regTime">2015-12-22</span></a>
+					<a>注册时间 <span class="mui-pull-right" id="regTime"></span></a>
 				</li>
 			</ul>
 			<ul class="mui-table-view" style="margin-top: 20px;">
@@ -49,17 +46,19 @@
 				
 				var userNameEl = doc.getElementById('userName');
 				var phoneEl = doc.getElementById('phone');
-				var userCodeEl = doc.getElementById('userCode');
 				var regTimeEl = doc.getElementById('regTime');
 				var loginPage = null, order_in_page = null, order_out_page = null, stock_srch_page = null, main_page = null, finance_page = null;
 				
 				window.addEventListener('login.before.show', function() {
 					var state = app.getState();
 					userNameEl.innerText = state.userName;
-					userCodeEl.innerText = state.userCode;
 				});
 				
-				doc.getElementById('exit').addEventListener('tap', function() {
+				window.addEventListener('logout', logout);
+				
+				doc.getElementById('exit').addEventListener('tap', logout);
+				
+				function logout() {
 					if (!loginPage) {
 						loginPage = plus.webview.getLaunchWebview();
 					}
@@ -112,7 +111,7 @@
 								break;
 						}
 					});
-				})
+				}
 				
 			}(mui, document);
 		</script>

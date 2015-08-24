@@ -30,7 +30,7 @@
 			<ul class="mui-table-view cl-table-header">
 				<li class="mui-table-view-cell">
 					<span class="mui-col-xs-4 cl-triangle">费用名称</span>
-					<span class="mui-col-xs-4 cl-triangle">金额</span>
+					<span class="mui-col-xs-4 cl-triangle">金额(元)</span>
 					<span class="mui-col-xs-4 cl-triangle">截止日期</span>
 				</li>
 			</ul>
@@ -77,7 +77,14 @@
 				
 				window.addEventListener('logout.before.show', function() {
 					scrollEl.innerHTML = '<div class="mui-loader">加载中...</div>';
-				})
+				});
+				
+				window.addEventListener('finance:refresh', function() {
+					app.getRemoteFinacial(function(data) {
+						scrollEl.innerHTML = listTemplate(data);
+						$('.mui-scroll-wrapper').scroll();
+					});
+				});
 				
 //				cl.dbReady(function(isFirst) {
 //					cl.addGoods([['3', 'b001', 'nike', 3], ['2', 'b002', 'addidas', 33]]);

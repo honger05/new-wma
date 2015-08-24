@@ -34,6 +34,7 @@
 				 * 打开之前处理的操作
 				 */
 				window.addEventListener('before.show', function(e) {
+					app.setOrder({});
 					sub_page = plus.webview.getWebviewById('detail-sub');
 					switch (e.detail.type) {
 						case 1:
@@ -61,7 +62,7 @@
 				 */
 				orderOKEl.addEventListener('tap', function() {
 					var order = app.getOrder();
-					if (order.datas.length == 0) {
+					if (!order.datas || (order.datas && order.datas.length == 0)) {
 						plus.nativeUI.toast('请选择商品数量');
 						return;
 					}
@@ -95,6 +96,9 @@
 									if (goodsId == orders[i].datas[k].goodsId) {
 										goodsIdFlag = true;
 										orders[i].datas[k].num += order.datas[j].num;
+										if (orders[i].datas[k].num > order.datas[j].quantity) {
+											orders[i].datas[k].num = order.datas[j].quantity;
+										}
 									}
 								}
 								if (!goodsIdFlag) {

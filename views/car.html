@@ -84,7 +84,7 @@
 			<h1 class="mui-title" id="title"></h1>
 		</header>
 		<nav class="mui-bar mui-bar-tab">
-			<a class="mui-tab-item">总计：<span class="fn-rmb" id="sum-rmb">0</span> 元</a>
+			<a class="mui-tab-item">总计：<span class="fn-rmb" id="sum-rmb">0</span> 件</a>
 		</nav>
 		<div class="mui-content cl-scroll-content" id="content">
 			<div class="mui-scroll-wrapper">
@@ -103,7 +103,7 @@
 						<p class="cl-goods-info-desc">{{goodsCode}}</p>
 					</div>
 					<div class="cl-goods-sum">
-						<span>{{sum}}</span>
+						<span id="sum-{{goodsId}}">{{sum}}</span>
 					</div>
 				</div>
 				<ul class="mui-table-view cl-table-header">
@@ -119,7 +119,7 @@
 						<span class="mui-col-xs-4">{{size}}</span>
 						<span class="mui-col-xs-3">{{color}}</span>
 						<span class="mui-col-xs-5 cl-numbox-span">
-							<div class="mui-numbox">
+							<div class="mui-numbox" data-numbox-min="0" data-numbox-max="{{quantity}}">
 								<button class="mui-btn mui-numbox-btn-minus">-</button>
 								<input type="number" class="mui-numbox-input" data-goods-id="{{goodsId}}" value="{{num}}"/>
 								<button class="mui-btn mui-numbox-btn-plus">+</button>
@@ -159,25 +159,34 @@
 							stockEl.setAttribute('methodName', 'stockOut');
 							break;
 					}
-					var orders = app.getOrders();
+					var orders = clearZeroOrder();
 					console.log(JSON.stringify(orders));
 					var typeFlag = false;
 					for (var i = orders.length - 1; i >= 0; i--) {
 						if (orders[i].type == type) {
-							typeFlag = true;
 							var oDatas = orders[i].datas;
+							if (oDatas.length == 0) {
+								break;
+							}
+							typeFlag = true;
 							var sortData = sortByGoodsCode(oDatas);
 							scrollEl.innerHTML = carTemplate(sortData);
 							$('.mui-numbox').numbox();
 							$('.mui-numbox').on('change', 'input', function() {
 								var goodsId = this.getAttribute('data-goods-id');
+								var sumid = 'sum-' + goodsId;
+								alert(sumid)
+								var sumEl = doc.getElementById(sumid);
+								alert(sumEl)
 								var num = parseInt(this.value);
+//								sumEl.innerText = num;
 								var index = indexOf(oDatas, goodsId);
-								if (index !== -1) oDatas[index].num = num;
-								app.setOrders(orders);
+								if (index !== -1) {
+									oDatas[index].num = num;
+								}
+								app.setOrders(orders); 
 							});
 							$('.mui-scroll-wrapper').scroll();
-							break;
 						}
 					}
 					if (!typeFlag) {
@@ -185,11 +194,31 @@
 					}
 				});
 				
-				stockEl.addEventListener('tap', function() {
-					var methodName = this.getAttribute('methodName');
+				function clearZeroOrder() {
 					var orders = app.getOrders();
 					for (var i = orders.length - 1; i >= 0; i--) {
+						var datas = orders[i].datas;
+						if (datas) {
+							for (var j = datas.length - 1; j >= 0; j--) {
+								if (datas[j].num == 0) {
+									datas.splice(j, 1);
+								}
+							}
+						}
+					}
+					app.setOrders(orders);
+					return orders;
+				}
+				
+				stockEl.addEventListener('tap', function() {
+					var methodName = this.getAttribute('methodName');
+					var orders = clearZeroOrder();
+					for (var i = orders.length - 1; i >= 0; i--) {
 						if (orders[i].type == type) {
+							if (orders[i].datas.length == 0) {
+								plus.nativeUI.toast('没有货物需要提交');
+								return;
+							}
 							app[methodName](orders[i].datas, function(ret) {
 								plus.nativeUI.toast(ret.extraInfo.message);
 								if (ret.extraInfo.status == 1) {
@@ -200,12 +229,12 @@
 									currentWebview.hide('fade-out');
 								}
 							});
-							break;
 						}
 					}
 				});
 				
 				function sortByGoodsCode(goods) {
+					var all_sum = 0;
 					var target = {};
 					var goodsGroup = [];
 					for (var i = goods.length - 1; i >= 0; i--) {
@@ -225,12 +254,16 @@
 								color: target[j][k].color,
 								size: target[j][k].size,
 								goodsId: target[j][k].goodsId,
+								quantity: target[j][k].quantity,
 								num: target[j][k].num
 							})
 						}
+						all_sum += temp.sum;
 						target[j] = temp;
 						goodsGroup.push(temp);
 					}
+					
+					sumRmbEl.innerText = all_sum;
 					
 					return goodsGroup;
 				}

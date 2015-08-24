@@ -30,7 +30,8 @@
 										<img class="mui-media-object mui-pull-left" src="{{imgUrl}}">
 										<span class="mui-badge mui-badge-danger mui-pull-right">{{allStockQuantity}}</span>
 										<div class="mui-media-body">
-											{{goodsName}}
+											<p class='goods-name'>{{goodsName}}</p>
+											<p class='mui-ellipsis'>{{brand}}</p>
 											<p class='mui-ellipsis'>{{barCode}}</p>
 										</div>
 									</a>
@@ -108,6 +109,13 @@
 				window.addEventListener('logout.before.show', function() {
 					contentEl.innerHTML = '<div class="mui-loader">加载中...</div>';
 				})
+				
+				window.addEventListener('stock:refresh', function() {
+					app.getRemoteSummary(function(data) {
+						contentEl.innerHTML = '';
+						render(data);
+					});
+				});
 				
 			}(mui, document);
 		</script>

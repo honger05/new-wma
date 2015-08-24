@@ -62,7 +62,7 @@
 					<span class="mui-col-xs-5 cl-numbox-span">
 						<div class="mui-numbox" data-numbox-min="0" data-numbox-max="{{quantity}}">
 							<button class="mui-btn mui-numbox-btn-minus">-</button>
-							<input type="number" class="mui-numbox-input" data-size="{{goodsSku.size}}" data-color="{{goodsSku.color}}" data-goods-id="{{goodsId}}"/>
+							<input type="number" class="mui-numbox-input" data-quantity="{{quantity}}" data-size="{{goodsSku.size}}" data-color="{{goodsSku.color}}" data-goods-id="{{goodsId}}"/>
 							<button class="mui-btn mui-numbox-btn-plus">+</button>
 						</div>
 					</span>
@@ -153,8 +153,8 @@
 						var goodsId = this.getAttribute('data-goods-id');
 						var size = this.getAttribute('data-size');
 						var color = this.getAttribute('data-color');
+						var quantity = parseInt(this.getAttribute('data-quantity')) || Number.MAX_INTEGER;
 						var num = parseInt(this.value);
-						if (num == 0) return;
 						var index = indexOf(order.datas, goodsId);
 						if (index === -1) {
 							order.datas.push({
@@ -164,10 +164,15 @@
 								goodsName: goodsName,
 								goodsCode: goodsCode,
 								size: size,
+								quantity: quantity,
 								color: color
 							})
 						} else {
-							order.datas[index].num = num;
+							if (num == 0) {
+								order.datas.splice(index, 1);
+							} else {
+								order.datas[index].num = num;
+							}
 						}
 						app.setOrder(order);						
 					});

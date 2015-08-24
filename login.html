@@ -153,23 +153,26 @@
 						if (!mainPage) {
 							mainPage = plus.webview.getWebviewById('main');
 						}
-						mainPage.show(aniShow, app.DURATION_TIME);
+						$.fire(mainPage, 'login.before.show');
 						setTimeout(function() {
-							$.fire(mainPage, 'login.before.show'); 
+							 mainPage.show(aniShow, app.DURATION_TIME);
 						}, 400)
 						setTimeout(function() {
 							loginPage.hide();
 						}, 1000)
 					}
-//					if (settings.autoLogin && state.authtoken) {
-//						setTimeout(function() {
-//							toMain('fade-in');							
-//						}, 3000);
-//					}
-					
-					setTimeout(function() {
-						plus.navigator.closeSplashscreen();
-					}, 1000);
+					if (settings.autoLogin && state.authtoken) {
+						setTimeout(function() {
+							toMain('fade-in');							
+						}, 4500);
+						setTimeout(function() {
+							plus.navigator.closeSplashscreen();
+						}, 5000);
+					} else {
+						setTimeout(function() {
+							plus.navigator.closeSplashscreen();
+						}, 600);
+					}
 					
 					button_login.addEventListener('tap', function(event) {
 						var login_info = {
