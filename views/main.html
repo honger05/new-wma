@@ -237,6 +237,9 @@
 									]);
 								}
 							}
+							if (data[i].boCode == 'pub_user') {
+								console.log(JSON.stringify(data[i].records))
+							}
 						}
 						cl.dbReady(function(isFirst) {
 							if (isFirst) {

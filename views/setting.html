@@ -24,12 +24,12 @@
 				<li class="mui-table-view-cell">
 					<a>姓名 <span class="mui-pull-right" id="userName"></span></a>
 				</li>
-				<li class="mui-table-view-cell">
+				<!--<li class="mui-table-view-cell">
 					<a>手机 <span class="mui-pull-right" id="phone"></span></a>
 				</li>
 				<li class="mui-table-view-cell">
 					<a>注册时间 <span class="mui-pull-right" id="regTime"></span></a>
-				</li>
+				</li>-->
 			</ul>
 			<ul class="mui-table-view" style="margin-top: 20px;">
 				<li class="mui-table-view-cell" style="text-align: center;">
@@ -54,11 +54,11 @@
 					userNameEl.innerText = state.userName;
 				});
 				
-				window.addEventListener('logout', logout);
+				window.addEventListener('logout', logout.bind(null, true));
 				
-				doc.getElementById('exit').addEventListener('tap', logout);
+				doc.getElementById('exit').addEventListener('tap', logout.bind(null, false));
 				
-				function logout() {
+				function logout(timeout) {
 					if (!loginPage) {
 						loginPage = plus.webview.getLaunchWebview();
 					}
@@ -78,12 +78,23 @@
 						finance_page = plus.webview.getWebviewById('finance-srch.html');
 					}
 					
-					if ($.os.ios) {
+					var logoutHandle = function() {
 						app.setState({});
 						loginPage.show('pop-in', app.DURATION_TIME);
-						$.fire(order_in_page, 'logout.before.show');
+						setTimeout(function() {
+							$.fire(order_in_page, 'logout.before.show');
+							$.fire(order_out_page, 'logout.before.show');
+							$.fire(stock_srch_page, 'logout.before.show');
+							$.fire(main_page, 'logout.before.show');
+							$.fire(finance_page, 'logout.before.show');
+						}, 400)
+					}
+					
+					if (timeout || $.os.ios) {
+						logoutHandle();
 						return;
 					}
+					
 					var btnArray = [{
 						title: "注销当前账号"
 					}, {
@@ -96,15 +107,7 @@
 						var index = event.index;
 						switch (index) {
 							case 1:
-								app.setState({});
-								loginPage.show('pop-in', app.DURATION_TIME);
-								setTimeout(function() {
-									$.fire(order_in_page, 'logout.before.show');
-									$.fire(order_out_page, 'logout.before.show');
-									$.fire(stock_srch_page, 'logout.before.show');
-									$.fire(main_page, 'logout.before.show');
-									$.fire(finance_page, 'logout.before.show');
-								}, 400)
+								logoutHandle();
 								break;
 							case 2:
 								plus.runtime.quit();

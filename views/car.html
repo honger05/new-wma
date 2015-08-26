@@ -103,7 +103,7 @@
 						<p class="cl-goods-info-desc">{{goodsCode}}</p>
 					</div>
 					<div class="cl-goods-sum">
-						<span id="sum-{{goodsId}}">{{sum}}</span>
+						<span id="sum-{{goodsCode}}" class="goods-sum">{{sum}}</span>
 					</div>
 				</div>
 				<ul class="mui-table-view cl-table-header">
@@ -121,7 +121,7 @@
 						<span class="mui-col-xs-5 cl-numbox-span">
 							<div class="mui-numbox" data-numbox-min="0" data-numbox-max="{{quantity}}">
 								<button class="mui-btn mui-numbox-btn-minus">-</button>
-								<input type="number" class="mui-numbox-input" data-goods-id="{{goodsId}}" value="{{num}}"/>
+								<input type="number" class="mui-numbox-input" data-current-num="{{num}}" data-goods-code="{{goodsCode}}" data-goods-id="{{goodsId}}" value="{{num}}"/>
 								<button class="mui-btn mui-numbox-btn-plus">+</button>
 							</div>
 						</span>
@@ -171,20 +171,29 @@
 							typeFlag = true;
 							var sortData = sortByGoodsCode(oDatas);
 							scrollEl.innerHTML = carTemplate(sortData);
+							var all_sum_el = doc.querySelectorAll('.goods-sum');
 							$('.mui-numbox').numbox();
 							$('.mui-numbox').on('change', 'input', function() {
 								var goodsId = this.getAttribute('data-goods-id');
-								var sumid = 'sum-' + goodsId;
-								alert(sumid)
+								var goodsCode = this.getAttribute('data-goods-code');
+								var current_num = parseInt(this.getAttribute('data-current-num'));
+								var sumid = 'sum-' + goodsCode;
 								var sumEl = doc.getElementById(sumid);
-								alert(sumEl)
 								var num = parseInt(this.value);
-//								sumEl.innerText = num;
+								var current_sum = parseInt(sumEl.innerText);
+								sumEl.innerText = current_sum - current_num + num;
 								var index = indexOf(oDatas, goodsId);
 								if (index !== -1) {
 									oDatas[index].num = num;
 								}
 								app.setOrders(orders); 
+								this.setAttribute('data-current-num', num);
+								
+								var all_sum = 0
+								Array.prototype.forEach.call(all_sum_el, function(el) {
+									all_sum += parseInt(el.innerText);
+								});
+								sumRmbEl.innerText = all_sum;
 							});
 							$('.mui-scroll-wrapper').scroll();
 						}
@@ -254,6 +263,7 @@
 								color: target[j][k].color,
 								size: target[j][k].size,
 								goodsId: target[j][k].goodsId,
+								goodsCode: target[j][k].goodsCode,
 								quantity: target[j][k].quantity,
 								num: target[j][k].num
 							})

@@ -10,7 +10,7 @@
 	var STOCK_IN_TYPE = 'com.chenlai.cloud.wms.stockin.order.entity.StockInOrder';
 	var STOCK_IN_GOODS_TYPE = 'com.chenlai.cloud.wms.stockin.order.entity.StockInOrderGoods';
 	var STOCK_OUT_TYPE = 'com.chenlai.cloud.wms.stockout.order.entity.StockOutOrder';
-	var STOCK_OUT_GOODS_TYPE = 'com.chenlai.cloud.wms.goods.entity.OrderGodos';
+	var STOCK_OUT_GOODS_TYPE = 'com.chenlai.cloud.wms.goods.entity.OrderGoods';
 	var STATIC_TYPE = 'com.chenlai.cloud.paas.common.entity.StaticExchangeEntity';
 	var DYNAMIC_TYPE = 'com.chenlai.cloud.paas.common.entity.DynamicExchangeEntity';
 	var D_DYNAMIC_TYPE = 'com.chenlai.cloud.paas.common.entity.DynamicEntity';
@@ -329,8 +329,11 @@
 				}
 				console.log(JSON.stringify(data));
 				if (data.errorCode === '6666') {
+					plus.nativeUI.toast('登陆已过期，重新登陆');
 					var setting_page = plus.webview.getWebviewById('setting');
-					mui.fire(setting_page, 'logout');
+					setTimeout(function() {
+						mui.fire(setting_page, 'logout');
+					}, 400);
 				} else {
 					config.successHandle && config.successHandle.apply(this, arguments);
 				}
